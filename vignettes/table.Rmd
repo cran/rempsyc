@@ -1,0 +1,310 @@
+---
+title: "Publication-ready APA tables: from R to Word in 2 min"
+author: "Rémi Thériault"
+date: "August 21, 2020"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Publication-ready APA tables: from R to Word in 2 min}
+  %\VignetteEngine{knitr::knitr}
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width = 8, fig.height = 7, warning = FALSE, 
+                      message = FALSE)
+knitr::opts_knit$set(root.dir = tempdir())
+```
+
+## Basic idea
+
+My previous workflow was pretty tedious, as after preparing tables in R (data frames), I would export them to Excel, then copy from Excel into Word, and finally format the table in Word. Whenever I would make minor changes, it would take quite a bit of time to repeat these steps.
+
+Fortunately, I found a package that suits my needs nicely, `flextable`. However, I only really need my tables in APA style 7th edition (Times New Roman size 12, only some horizontal lines, double-spaced, right number of decimals, etc.), so I made a function just with the default settings I like to simplify my life.
+
+There are many existing options for APA tables. Most of them however will prebuild tables for you only for specific analyses or contexts and provide little flexibility (or yet won't export to Word). If you need to build your own tables and require more flexibility, read on!
+
+### Getting started
+
+Load the `rempsyc` package:
+
+```{r}
+library(rempsyc)
+```
+
+> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `devtools::install_github("rempsyc/rempsyc")`. Package `devtools` is necessary for this command. If you haven't installed `devtools` yet, install it via `install.packages("devtools")`.
+
+The function can be used on almost any dataframe (though it does not allow duplicate column names). Here's a simple example using the `mtcars` dataset, which comes with base `R` (meaning you can try this example too without downloading anything).
+
+```{r}
+nice_table(mtcars[1:3, ], 
+           title = c("Table 1", "Motor Trend Car Road Tests"),
+           footnote = c("The data was extracted from the 1974 Motor Trend US magazine.",
+                        "* p < .05, ** p < .01, *** p < .001"))
+```
+
+## Publication-ready tables
+
+Let's setup a more 'credible' table with actual statistics for demonstration. We would normally need a bit of complicated code to extract some relevant statistical information and create a dataframe that suits our needs. 
+
+### Custom table
+
+```{r}
+# Standardize variables to get standardized coefficients
+mtcars.std <- lapply(mtcars, scale)
+# Create a simple linear model
+model <- lm(mpg ~ cyl + wt * hp, mtcars.std)
+# Gather summary statistics
+stats.table <- as.data.frame(summary(model)$coefficients)
+# Get the confidence interval (CI) of the regression coefficient
+CI <- confint(model)
+# Add a row to join the variables names and CI to the stats
+stats.table <- cbind(row.names(stats.table), stats.table, CI)
+# Rename the columns appropriately
+names(stats.table) <- c("Term", "B", "SE", "t", "p", "CI_lower", "CI_upper")
+```
+
+The dataframe looks like this (notice the large number of decimals):
+
+```{r}
+stats.table
+```
+
+Now we can apply our function!
+
+```{r}
+nice_table(stats.table)
+```
+
+Next, we can save the flextable as an object, which we can later further edit, view, or export to another software (e.g., Microsoft Word).
+
+```{r}
+my_table <- nice_table(stats.table)
+```
+
+### Save table to Word
+
+One can easily save the table to word by specifying the object name and desired path.
+
+```{r, eval = FALSE}
+save_as_docx(my_table, path = "nice_tablehere.docx")
+```
+
+Simply change the path to where you would like to save it. If you copy-paste your path name, remember to use "R" slashes ('/' rather than '\\'). Also remember to specify the  file name and its .docx extension.
+
+That's it! Simple eh?
+
+---
+
+### Statistical formatting
+
+Notice that if you provide the `CI_lower` and `CI_upper` column names, it will automatically and properly format your confidence interval column and remove the lower and upper bound columns.
+
+You can also see that it automatically formats the df, b, t, and p values to italic. It also  correctly rounded each row, and formatted p values as < .001 and stripped the leading zeros (it will do the same for correlations r, R2, sr2).
+
+> Note: in order for this to work automatically, your columns must be named correctly. Currently the function will make the following conversions: p, t, SE, SD, M, W, N, n, z, F, b, r, and df to italic; R2 and sr2 to italic squared, dR to italic R subscript, np2 to italic η subscript-p squared, ges to italic η subscript-G squared, and B to β. Not seeing a symbol that should be there? Contact me and I'll add it!
+
+Let's test this by simply changing our dataframe names for the exercise.
+
+```{r}
+test <- head(mtcars, 3)
+names(test) <- c("dR", "N", "M", "SD", "W", "np2", "ges", "z", "r", "R2", "sr2")
+test[, 10:11] <- test[, 10:11]/10
+nice_table(test)
+```
+
+### Highlighting 
+
+You can also add an argument to highlight significant results for better visual discrimination, if you wish so.
+
+```{r}
+nice_table(stats.table, highlight = TRUE)
+```
+
+> **Pro tip**: You can instead provide the `highlight` argument with a numeric value to set whatever critical *p*-value check you want, like `highlight = .10`, for "marginally significant" results, or `highlight = .01` if you want to be more conservative.
+
+```{r}
+nice_table(stats.table, highlight = .01)
+```
+
+## Integrations
+
+Making your own table manually may be intimidating at first. Fortunately, this function integrates nicely with the `broom` and `report` packages. So we can also skip the complicated code if one is OK with using the default `broom`/`report` output. This requires specifying the type of model in the function's `broom`/`report` argument (supported options are `lm`, `t.test`, `cor.test` and `wilcox.test`). We go through an example of each below.
+
+### `broom` table
+
+```{r}
+library(broom)
+model <- lm(mpg ~ cyl + wt * hp, mtcars)
+(stats.table <- tidy(model, conf.int = TRUE))
+nice_table(stats.table, broom = "lm")
+```
+
+### `report` table
+
+```{r}
+library(report)
+model <- lm(mpg ~ cyl + wt * hp, mtcars)
+(stats.table <- as.data.frame(report(model)))
+nice_table(stats.table)
+```
+
+The `report` package provides quite comprehensive tables, so one may request an abbreviated table with the `short` argument.
+
+```{r}
+nice_table(stats.table, short = TRUE)
+```
+
+### `rempsyc` table
+
+`nice_table` also integrates nicely with other functions from the `rempsyc` package: [`nice_t_test`](../articles/t-test.html), [`nice_mod`, `nice_slopes`, `nice_lm`, and `nice_lm_slopes`](../articles/moderation.html), because they provide good default formats that include effect sizes. Let's make a quick demo for some of them. The t-test function supports making several t-tests at once by specifying the desired dependent variables.
+
+#### t-tests: [`nice_t_test`](../articles/t-test.html)
+
+```{r}
+nice_t_test(data = mtcars,
+            response = c("mpg", "disp", "drat"),
+            group = "am",
+            warning = FALSE) -> stats.table
+stats.table
+
+nice_table(stats.table)
+```
+
+#### Moderations: [`nice_mod`](../articles/moderation.html)
+
+```{r}
+nice_mod(data = mtcars,
+         response = "mpg",
+         predictor = "gear",
+         moderator = "wt") -> stats.table
+stats.table
+
+nice_table(stats.table)
+```
+
+## Custom cell formatting
+
+In some cases, one may want to define specific formatting for specific columns. For example, one may be building a table full of *p*-values and may want them formatted as such (or just the appropriate columns).
+
+### *p*-values
+
+```{r}
+nice_table(test[8:11], col.format.p = 1:4)
+```
+
+### *r*-values
+
+The same goes for *r*-values. As you see below, you can also overwrite automatic default formatting.
+
+```{r}
+nice_table(test[8:11], col.format.r = 1:4)
+```
+
+### Custom functions
+
+And one can even provide a custom function:
+
+```{r}
+fun <- function(x) {x+11.1}
+
+nice_table(test[8:11], col.format.custom = 2:4, format.custom = "fun")
+
+fun <- function(x) {paste("×", x)}
+
+nice_table(test[8:11], col.format.custom = 2:4, format.custom = "fun")
+```
+
+---
+
+## Further editing
+
+Often, one will need to tweak a table for a particular situation. Have no fear. This function outputs a `flextable` object, which can be 'easily' edited via the regular `flextable` functions. For an intro to `flextable` functions, see: https://davidgohel.github.io/flextable/.
+
+Here is the basic formatting example provided by the `flextable` package:
+
+```{r}
+library(dplyr)
+library(flextable)
+my_table %>%
+  italic(j = 1, part = "body") %>%
+  bg(bg = "gray", part = "header") %>%
+  color(color = "blue", part = "header") %>%
+  color(~ t > -3.5, ~ t + SE, color = "red") %>%
+  bold(~ t > -3.5, ~ t + p, bold = TRUE) %>%
+  set_header_labels(Term = "Model Term",
+                    B	= "Standardized Beta",
+                    p = "p-value")
+```
+
+## Special situation: multilevel headers
+
+Some people have asked how to make multilevel descriptive level tables with `nice_table`. There are several other ways than using this package. It is not straightforward, but here's my attempt for multiple time measurements, multiple groups, and multiple dependent variables.
+
+So assuming we have a study with several time measurements, we will make a copy of the iris data set and pretend this is the "Time 2". Species will be our grouping variable. Before we can apply our simple function, however, we have to (painstakingly) reshape the data to the proper format.
+
+```{r}
+# Setup example dataset
+data <- cbind(iris[c(5, 1:3)], iris[1:3]+1)
+names(data)[-1] <- c(paste0("T1.", names(data[2:4])),
+                     paste0("T2.", names(data[2:4])))
+
+# Get descriptive statistics
+library(dplyr)
+data %>%
+  group_by(Species) %>% 
+  summarize(across(T1.Sepal.Length:T2.Petal.Length, 
+                   list(m = mean, sd = sd),
+                   .names = "{.col}.{.fn}")) -> descriptive.data
+
+# Rename the columns so we can merge them later
+names(descriptive.data) <- c("Species", rep(c("T1.M", "T1.SD"), 3),
+                             rep(c("T2.M", "T2.SD"), 3))
+
+# Extract the data by variable and measurement time
+T1.disp <- cbind(descriptive.data[1, 2:3], 
+                 descriptive.data[2, 2:3], 
+                 descriptive.data[3, 2:3])
+T1.hp <- cbind(descriptive.data[1, 4:5], 
+               descriptive.data[2, 4:5], 
+               descriptive.data[3, 4:5])
+T1.drat <- cbind(descriptive.data[1, 6:7], 
+                 descriptive.data[2, 6:7], 
+                 descriptive.data[3, 6:7])
+T2.disp <- cbind(descriptive.data[1, 8:9],
+                 descriptive.data[2, 8:9], 
+                 descriptive.data[3, 8:9])
+T2.hp <- cbind(descriptive.data[1, 10:11], 
+               descriptive.data[2, 10:11], 
+               descriptive.data[3, 10:11])
+T2.drat <- cbind(descriptive.data[1, 12:13], 
+                 descriptive.data[2, 12:13], 
+                 descriptive.data[3, 12:13])
+
+# Combine Time 1 with Time 2
+T1 <- rbind(T1.disp, T1.hp, T1.drat)
+T2 <- rbind(T2.disp, T2.hp, T2.drat)
+wide.data <- cbind(Variable = names(iris[1:3]), T1, T2)
+
+# Rename variables to avoid duplicate names not allowed
+names(wide.data)[-1] <- paste0(
+  rep(c("T1.", "T2."), each = 6), 
+  rep(descriptive.data$Species, times = 2, each = 2),
+  paste0(c(".M", ".SD")))
+
+# Make preliminary nice_table
+nice_table(wide.data)
+
+```
+
+So far so good; we've managed to tranform the data in a suitable format for the next step. Once the data is in the right shape (header components separated by dots), we can apply our magic:
+
+```{r}
+nice_table(wide.data, separate.header = TRUE, italics = seq(wide.data))
+```
+
+If you find a more efficient way to do this (the data wrangling part), please let me know. Nice result though!
+
+### Thanks for checking in
+    
+Make sure to check out this page again if you use the code after a time or if you encounter errors, as I periodically update or improve the code. Feel free to contact me for comments, questions, or requests to improve this function at https://github.com/rempsyc/rempsyc/issues. See all tutorials here: https://remi-theriault.com/tutorials.
