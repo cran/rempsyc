@@ -7,11 +7,12 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Quickly test linear regression assumptions}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r, include=FALSE}
-knitr::opts_chunk$set(fig.width=8, fig.height=7, warning=FALSE, message=FALSE, out.width="70%")
+knitr::opts_chunk$set(fig.width = 8, fig.height = 7, warning = FALSE, 
+                      message = FALSE, out.width = "70%")
 ```
 
 ## Basic idea
@@ -24,7 +25,8 @@ Let's make a quick demonstration of this package first.
 # Load necessary libraries
 library(performance)
 library(see)
-# Note: if you haven't installed the packages above, you'll need to install them first by using:
+# Note: if you haven't installed the packages above, 
+# you'll need to install them first by using:
 # install.packages("performance") and install.packages("see")
 
 # Create a regression model (using data available in R by default)
@@ -48,15 +50,15 @@ Load the `rempsyc` package:
 library(rempsyc)
 ```
 
-> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `devtools::install_github("rempsyc/rempsyc")`. Package `devtools` is necessary for this command. If you haven't installed `devtools` yet, install it via `install.packages("devtools")`.
+> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `install.packages("rempsyc")`.
 
-The raw output doesn't look so nice in the console because the column names are so long, but it does look good in the viewer or when exported to a word processing software because the column names get wrapped. You can try it in Rstudio yourself with the following command:
+The raw output doesn't look so nice in the console because the column names are so long, but it does look good in the viewer or when exported to a word processing software because the column names get wrapped. You can try it in RStudio yourself with the following command:
 
 ```{r, eval = FALSE}
 View(nice_assumptions(model))
 ```
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_assumptions/assumptions1.png)
+![](https://rempsyc.remi-theriault.com/images/blog_assumptions/assumptions1.png)
 
 ```{r}
 nice_table(nice_assumptions(model), col.format.p = 2:4)
@@ -81,7 +83,7 @@ Use the Viewer for better results
 View(assumptions.table)
 ```
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_assumptions/assumptions2.png)
+![](https://rempsyc.remi-theriault.com/images/blog_assumptions/assumptions2.png)
 
 Or alternatively with the [nice_table() function](../articles/table.html)
 
@@ -181,7 +183,7 @@ View(nice_var(data=iris,
               group="Species"))
 ```
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_assumptions/var1.png)
+![](https://rempsyc.remi-theriault.com/images/blog_assumptions/var1.png)
 
 Let's now try it for many variables to see how handy it can be.
 
@@ -199,7 +201,7 @@ Use the Viewer for better results (or export it to Word using my [nice_table() f
 View(var.table)
 ```
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_assumptions/var2.png)
+![](https://rempsyc.remi-theriault.com/images/blog_assumptions/var2.png)
 
 ### Visualizing Variance
 

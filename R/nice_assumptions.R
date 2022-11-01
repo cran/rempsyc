@@ -34,6 +34,7 @@
 
 #' @export
 nice_assumptions <- function(model) {
+  rlang::check_installed("lmtest", reason = "for this function.")
   model.name <- format(model$terms)
   shapiro <- round(stats::shapiro.test(model$residuals)$p.value, 3)
   bp <- round(lmtest::bptest(model)$p.value, 3)
@@ -52,7 +53,7 @@ nice_assumptions <- function(model) {
   df
 }
 
-#' @noRd
+#' @export
 print.nice_assumptions <- function(x, ...) {
   cat(
     "Interpretation: (p) values < .05 imply assumptions are not respected. ",

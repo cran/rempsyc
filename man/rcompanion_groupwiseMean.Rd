@@ -60,19 +60,19 @@ will produce \code{NA}.}
 
 \item{normal}{If \code{TRUE}, includes the normal confidence
 intervals for the group means by bootstrap.
-See \code{\link{boot.ci}}.}
+See \code{{boot::boot.ci}}.}
 
 \item{basic}{If \code{TRUE}, includes the basic confidence
 intervals for the group means by bootstrap.
-See \code{\link{boot.ci}}.}
+See \code{{boot::boot.ci}}.}
 
 \item{percentile}{If \code{TRUE}, includes the percentile confidence
 intervals for the group means by bootstrap.
-See \code{\link{boot.ci}}.}
+See \code{{boot::boot.ci}}.}
 
 \item{bca}{If \code{TRUE}, includes the BCa confidence
 intervals for the group means by bootstrap.
-See \code{\link{boot.ci}}.}
+See \code{{boot::boot.ci}}.}
 
 \item{digits}{The number of significant figures to use in output.}
 
@@ -89,6 +89,13 @@ the dependency is failing upon install of the current package.
 
 From the original documentation: "Calculates means and
 confidence intervals for groups."
+
+From: https://rcompanion.org/handbook/C_03.html
+
+"For routine use, I recommend using bootstrapped confidence
+intervals, particularly the BCa or percentile methods (but...)
+by default, the function reports confidence intervals by the
+traditional method."
 }
 \details{
 The input should include either \code{formula} and \code{data};

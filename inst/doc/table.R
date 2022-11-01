@@ -7,10 +7,11 @@ knitr::opts_knit$set(root.dir = tempdir())
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
-nice_table(mtcars[1:3, ], 
-           title = c("Table 1", "Motor Trend Car Road Tests"),
-           footnote = c("The data was extracted from the 1974 Motor Trend US magazine.",
-                        "* p < .05, ** p < .01, *** p < .001"))
+nice_table(
+  mtcars[1:3, ], 
+  title = c("Table 1", "Motor Trend Car Road Tests"),
+  footnote = c("The data was extracted from the 1974 Motor Trend US magazine.",
+               "* p < .05, ** p < .01, *** p < .001"))
 
 ## -----------------------------------------------------------------------------
 # Standardize variables to get standardized coefficients
@@ -98,6 +99,14 @@ fun <- function(x) {paste("×", x)}
 
 nice_table(test[8:11], col.format.custom = 2:4, format.custom = "fun")
 
+fun <- function(x) {formatC(x, format = "f", digits = 0)}
+
+nice_table(test[3:6], col.format.custom = 1:4, format.custom = "fun")
+
+fun <- function(x) {formatC(x, format = "f", digits = 5)}
+
+nice_table(test[3:6], col.format.custom = 1:4, format.custom = "fun")
+
 ## -----------------------------------------------------------------------------
 library(dplyr)
 library(flextable)
@@ -166,4 +175,25 @@ nice_table(wide.data)
 
 ## -----------------------------------------------------------------------------
 nice_table(wide.data, separate.header = TRUE, italics = seq(wide.data))
+
+## -----------------------------------------------------------------------------
+T1.mpg <- nice_t_test(data = mtcars, response = "mpg", group = "am")
+T2.mpg <- nice_t_test(data = mtcars, response = "mpg", group = "vs")
+T1.disp <- nice_t_test(data = mtcars, response = "disp", group = "am")
+T2.disp <- nice_t_test(data = mtcars, response = "disp", group = "vs")
+names(T1.mpg)[-1] <- paste0("T1.", names(T1.mpg)[-1])
+names(T2.mpg) <- paste0("T2.", names(T2.mpg))
+names(T1.disp)[-1] <- paste0("T1.", names(T1.disp)[-1])
+names(T2.disp) <- paste0("T2.", names(T2.disp))
+T1 <- rbind(T1.mpg, T1.disp)
+T2 <- rbind(T2.mpg, T2.disp)
+wide.data <- cbind(T1, T2[-(1)])
+nice_table(wide.data)
+nice_table(wide.data, separate.header = TRUE)
+
+## -----------------------------------------------------------------------------
+names(wide.data)[-1] <- paste0(rep(c("Early.", "Late."), each = 6), names(wide.data)[-1])
+nice_table(wide.data)
+nice_table(wide.data, separate.header = TRUE)
+
 

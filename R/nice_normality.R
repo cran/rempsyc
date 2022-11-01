@@ -17,9 +17,10 @@
 #' @param title An optional title, if desired.
 #' @param histogram Logical, whether to add an histogram
 #' on top of the density plot.
-#' @param breaks.auto If histogram = TRUE, then option to set bins/breaks automatically,
-#'                    mimicking the default behaviour of base R `hist()` (the Sturges
-#'                    method). Defaults to `FALSE`.
+#' @param breaks.auto If histogram = TRUE, then option to set bins/breaks
+#'                    automatically, mimicking the default behaviour of
+#'                    base R `hist()` (the Sturges method). Defaults to
+#'                    `FALSE`.
 #' @param ... Further arguments from `nice_qq()` and
 #' `nice_density()` to be passed to `nice_normality()`
 #'
@@ -73,8 +74,7 @@ nice_normality <- function(data,
                            histogram = FALSE,
                            breaks.auto = FALSE,
                            ...) {
-  rlang::check_installed("see", reason = "for this function.")
-  rlang::check_installed("patchwork", reason = "for this function.")
+  rlang::check_installed(c("ggplot2", "see", "patchwork"), reason = "for this function.")
   plot.a <- nice_density(
     data = data, variable = variable, group = group,
     colours = colours, groups.labels = groups.labels,

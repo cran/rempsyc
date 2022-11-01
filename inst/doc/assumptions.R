@@ -1,11 +1,13 @@
 ## ---- include=FALSE-----------------------------------------------------------
-knitr::opts_chunk$set(fig.width=8, fig.height=7, warning=FALSE, message=FALSE, out.width="70%")
+knitr::opts_chunk$set(fig.width = 8, fig.height = 7, warning = FALSE, 
+                      message = FALSE, out.width = "70%")
 
 ## -----------------------------------------------------------------------------
 # Load necessary libraries
 library(performance)
 library(see)
-# Note: if you haven't installed the packages above, you'll need to install them first by using:
+# Note: if you haven't installed the packages above, 
+# you'll need to install them first by using:
 # install.packages("performance") and install.packages("see")
 
 # Create a regression model (using data available in R by default)

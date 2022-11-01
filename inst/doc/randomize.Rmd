@@ -7,11 +7,12 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Easy randomization in R}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.width = 7, fig.height = 7, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.width = 7, fig.height = 7, 
+                      warning = FALSE, message = FALSE)
 knitr::opts_knit$set(root.dir = tempdir())
 ```
 
@@ -27,7 +28,7 @@ Load the `rempsyc` package:
 library(rempsyc)
 ```
 
-> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `devtools::install_github("rempsyc/rempsyc")`. Package `devtools` is necessary for this command. If you haven't installed `devtools` yet, install it via `install.packages("devtools")`.
+> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `install.packages("rempsyc")`.
 
 ## Between-Group Design
 
@@ -44,7 +45,8 @@ nice_randomize(design = "between",
                Ncondition = 4, 
                n = 8, 
                condition.names = c("BP","CX","PZ","ZL"))
-# Warning: sample size needs to be a multiple of your number of groups if using "between"!
+# Warning: sample size needs to be a multiple of your 
+# number of groups if using "between"!
 # FYI: condition names stand for popular antidepressants:
 # BP = Bupropion, CX = Celexa, PZ = Prozac, ZL = Zoloft.
 ```
@@ -78,13 +80,14 @@ nice_randomize(design = "within",
 A nice way to make a run sheet quickly (regardless of design) is by adding column names in advance with the `col.names` argument:
 
 ```{r}
-nice_randomized_subjects <- nice_randomize(design = "within", 
-                                           Ncondition = 4, 
-                                           n = 128,
-                                           condition.names = c("SV","AV","ST","AT"), 
-                                           col.names = c("id", "Condition", "Date/Time",
-                                                         "SONA ID", "Age/Gd.", "Handedness",
-                                                         "Tester", "Notes"))
+nice_randomized_subjects <- nice_randomize(
+  design = "within", 
+  Ncondition = 4, 
+  n = 128,
+  condition.names = c("SV","AV","ST","AT"), 
+  col.names = c("id", "Condition", "Date/Time",
+                "SONA ID", "Age/Gd.", "Handedness",
+                "Tester", "Notes"))
 head(nice_randomized_subjects)
 ```
 
@@ -96,7 +99,8 @@ head(nice_randomized_subjects)
 runsheet <- nice_table(nice_randomized_subjects)
 save_as_docx(runsheet, path = "runsheet.docx")
 # Change the path to where you would like to save it.
-# If you copy-paste your path name, remember to use "R" slashes ('/' rather than '\').
+# If you copy-paste your path name, remember to 
+# use "R" slashes ('/' rather than '\').
 # Also remember to specify the .docx extension of the file.
 ```
 
@@ -104,49 +108,49 @@ save_as_docx(runsheet, path = "runsheet.docx")
 
 3. Make your document horizontal by going to the Layout tab, Page Setup section, then clicking on the "Orientation" button and selecting the *Landscape* option.
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step4.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step4.png)
 
 4. Select whole table.
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step5.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step5.png)
 
 5. Left align table.
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/flextable2.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/flextable2.png)
 
 6. Turn off preferred width in table properties.
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/flextable3.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/flextable3.png)
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/flextable4.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/flextable4.png)
 
 7. Make required formatting arrangements: In the Home tab, Paragraph section, click on the Borders button, then click *All Borders*.
     
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step6.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step6.png)
     
 8. Next adjust the columns width to fit your page (especially the "Notes" column, which should be wider).
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step8.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step8.png)
     
 9. If necessary, pull the table left with the little square pound *Move Table Column* button in top margin to create more space (note that the table should be selected first).
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step9.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step9.png)
 
 10. Double-click on the header to edit it and add a title (e.g., "Study 3 Runsheet"); center and bold (suggested font size: 14).
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step11.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step11.png)
 
 11. Under the title in smaller font (not bold; suggested size: 12), add the legend for the conditions (e.g., "SV = Synchronous Visual, AV = Asynchronous Visual, ST = Synchronous Tactile, AT = Asynchronous Tactile").
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step12.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step12.png)
 
 12. Add a page number at the bottom of the page by going to the Insert tab, Header & Footer section, and click on the "Page Number" button, then selecting "Bottom of Page", then *Plain Number 3* (which is bottom right).
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step14.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step14.png)
 
 13. Now 'Save As' using the F12 keyboard key, then select save as .pdf, and you're done! :)
 
-![](https://rempsyc.remi-theriault.com/articles/images/blog_randomize/step15.png)
+![](https://rempsyc.remi-theriault.com/images/blog_randomize/step15.png)
 
 You can now use this runsheet yourself, print it, or send it to your research assistants!
 

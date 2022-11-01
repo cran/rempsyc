@@ -1,5 +1,6 @@
 ## ----global_options, include=FALSE--------------------------------------------
-knitr::opts_chunk$set(fig.width = 7, fig.height = 7, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.width = 7, fig.height = 7, 
+                      warning = FALSE, message = FALSE)
 knitr::opts_knit$set(root.dir = tempdir())
 
 ## -----------------------------------------------------------------------------

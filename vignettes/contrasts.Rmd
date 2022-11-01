@@ -7,7 +7,7 @@ output:
     toc: true
 vignette: >
   %\VignetteIndexEntry{Planned Contrasts Analyses (Group Comparisons)}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r global_options, include=FALSE}
@@ -36,8 +36,7 @@ For the minimal example, we will use the `iris` dataset, which is installed with
 library(rempsyc)
 ```
 
-> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `devtools::install_github("rempsyc/rempsyc")`. Package `devtools` is necessary for this command. If you haven't installed `devtools` yet, install it via `install.packages("devtools")`.
-
+> ***Note:*** If you haven't installed this package yet, you will need to install it via the following command: `install.packages("rempsyc")`.
 
 Let's test out the function on existing data
 
@@ -78,7 +77,8 @@ save_as_docx(my_table, path = "contrasts.docx")
 Let's save a high-resolution/vector version of this figure in PDF (it could be .png or any other format too if necessary).
 
 ```{r, eval = FALSE}
-ggsave('Figure 1.pdf', figure, width = 7, height = 7, unit = 'in', dpi = 300)
+ggplot2::ggsave('Figure 1.pdf', figure, width = 7, height = 7, 
+                unit = 'in', dpi = 300)
 ```
 
 Congratulations for making it that far! You've done it! From A to Z, you now know how to make things work! If you would like to integrate this with a broader workflow, read on for the next part!
@@ -112,6 +112,7 @@ table.stats <- nice_contrasts(response = DV,
                               group = "Group",
                               data = data)
 table.stats
+
 ```
 
 *Add more meaningful names for measures*
@@ -216,8 +217,8 @@ library(ggpubr)
 Let's save a high-resolution/vector version of this figure in PDF (it could be .png or any other format too if necessary).
 
 ```{r, eval = FALSE}
-ggsave('Figure 1.pdf', figure, width = 14, height = 14, 
-       unit = 'in', dpi = 300)
+ggplot2::ggsave('Figure 1.pdf', figure, width = 14, height = 14, 
+                unit = 'in', dpi = 300)
 ```
 
 ### Thanks for checking in

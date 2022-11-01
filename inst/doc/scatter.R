@@ -17,9 +17,11 @@ nice_scatter(data = mtcars,
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  ### Save a high-resolution image file to specified directory
-#  ggsave('nice_scatterplothere.tiff', width = 7, height = 7, unit = 'in', dpi = 300)
+#  ggplot2::ggsave('nice_scatterplothere.pdf', width = 7, height = 7,
+#                  unit = 'in', dpi = 300)
 #  # Change the path to where you would like to save it.
-#  # If you copy-paste your path name, remember to use "R" slashes ('/' rather than '\').
+#  # If you copy-paste your path name, remember to
+#  # use "R" slashes ('/' rather than '\').
 #  # Also remember to specify the .tiff extension of the file.
 
 ## -----------------------------------------------------------------------------
@@ -115,7 +117,9 @@ nice_scatter(data = mtcars,
              response = "mpg",
              group = "cyl",
              has.legend = TRUE,
-             groups.order = c(8,4,6)) # These are the levels of 'mtcars$cyl', so we place lvl 8 first, then lvl 4, etc.
+             groups.order = c(8,4,6))
+# These are the levels of 'mtcars$cyl', so we place lvl 8 
+# first, then lvl 4, etc.
 
 ## -----------------------------------------------------------------------------
 nice_scatter(data = mtcars,
@@ -123,7 +127,8 @@ nice_scatter(data = mtcars,
              response = "mpg",
              group = "cyl",
              has.legend = TRUE,
-             groups.labels = c("Weak","Average","Powerful")) # Warning: This applies after changing order of level
+             groups.labels = c("Weak","Average","Powerful"))
+# Warning: This applies after changing order of level
 
 ## -----------------------------------------------------------------------------
 nice_scatter(data = mtcars,            
@@ -195,10 +200,14 @@ nice_scatter(data = mtcars,
              groups.labels = c("Weak", "Average", "Powerful"))
 
 ## -----------------------------------------------------------------------------
-new.Data <- mtcars # This simply copies the 'mtcars' dataset
-new.Data$cyl <- "Average" # That would be your "Group" variable normally
-# And this operation fills all cells of that column with the word "Average" to identify our new 'group'
-XData <- rbind(mtcars,new.Data) # This adds the new "Average" group rows to the original data rows
+# This simply copies the 'mtcars' dataset
+new.Data <- mtcars
+# That would be your "Group" variable normally
+# And this operation fills all cells of that column with the word
+# "Average" to identify our new 'group'
+new.Data$cyl <- "Average"
+# This adds the new "Average" group rows to the original data rows
+XData <- rbind(mtcars,new.Data)
 
 ## -----------------------------------------------------------------------------
 (p <- nice_scatter(data = XData,
@@ -207,16 +216,22 @@ XData <- rbind(mtcars,new.Data) # This adds the new "Average" group rows to the 
                    has.points = FALSE,
                    has.legend = TRUE,
                    group = "cyl",
-                   colours = c("black", "#00BA38", "#619CFF", "#F8766D"), # We add colours manually because we want average to be black to stand out
-                   groups.order = c("Average","4","6","8"), # We do this to have average on top since it's the most important
-                   groups.alpha = c(1,0.5,0.5,0.5))) # This adds 50% transparency to all lines except the first one (Average) which is 100%
+                   colours = c("black", "#00BA38", "#619CFF", "#F8766D"),
+# We add colours manually because we want average to be black to stand out
+                   groups.order = c("Average","4","6","8"),
+# We do this to have average on top since it's the most important
+                   groups.alpha = c(1,0.5,0.5,0.5)))
+# This adds 50% transparency to all lines except 
+# the first one (Average) which is 100%
 
 ## -----------------------------------------------------------------------------
 library(ggplot2)
 p + geom_point(data = mtcars,
                size = 2, 
                alpha = 0.5,
-               shape = 16, # We use shape 16 because the default shape 19 sometimes causes problems when exporting to PDF
+               shape = 16,
+# We use shape 16 because the default shape 19 sometimes 
+# causes problems when exporting to PDF
                mapping = aes(x = wt, 
                              y = mpg, 
                              colour = factor(cyl), 
@@ -227,7 +242,8 @@ p + geom_point(data = mtcars,
                    predictor = "wt",
                    response = "mpg",
                    has.points = FALSE,
-                   has.legend = TRUE, # This argument is important else the next legend won't appear on the second layer!
+                   has.legend = TRUE,
+# Important argument! Else the next legend won't appear on the second layer!
                    colours = "black"))
 
 ## -----------------------------------------------------------------------------

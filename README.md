@@ -7,12 +7,12 @@
 
 [![R-CMD-check](https://github.com/rempsyc/rempsyc/workflows/R-CMD-check/badge.svg)](https://github.com/rempsyc/rempsyc/actions)
 [![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/ui#package:rempsyc)
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rempsyc)](https://cran.r-project.org/package=rempsyc)
 [![Last-commit](https://img.shields.io/github/last-commit/rempsyc/rempsyc)](https://github.com/rempsyc/rempsyc/commits/main)
 [![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-![size](https://img.shields.io/github/repo-size/rempsyc/rempsyc)
+[![downloads](https://cranlogs.r-pkg.org/badges/rempsyc)](https://shinyus.ipub.com/cranview/)
+[![total](https://cranlogs.r-pkg.org/badges/grand-total/rempsyc)](https://shinyus.ipub.com/cranview/)
 [![sponsors](https://img.shields.io/github/sponsors/rempsyc)](https://github.com/sponsors/rempsyc)
 [![followers](https://img.shields.io/github/followers/rempsyc?style=social)](https://github.com/rempsyc?tab=followers)
 [![forks](https://img.shields.io/github/forks/rempsyc/rempsyc?style=social)](https://github.com/rempsyc/rempsyc/network/members)
@@ -33,8 +33,14 @@ bug, or request a feature.
 
 ## Installation
 
-You can install the development version (the only version currently
-available) of the `rempsyc` package from the r-universe:
+You can install the `rempsyc` package directly from CRAN:
+
+``` r
+install.packages("rempsyc")
+```
+
+Or the development version from the r-universe (note that there is a
+24-hour delay with GitHub):
 
 ``` r
 install.packages("rempsyc", repos = c(
@@ -42,7 +48,7 @@ install.packages("rempsyc", repos = c(
   CRAN = "https://cloud.r-project.org"))
 ```
 
-Or from GitHub:
+Or from GitHub, for the very latest version:
 
 ``` r
 # If package `remotes` isn't already installed, install it with `install.packages("remotes")`
@@ -102,10 +108,6 @@ library(rempsyc)
 nice_t_test(data = mtcars,
             response = c("mpg", "disp", "drat", "wt"),
             group = "am") -> t.tests
-#> Using Welch t-test (base R's default; cf. https://doi.org/10.5334/irsp.82).
-#> For the Student t-test, use `var.equal = TRUE`. 
-#>  
-#> 
 t.tests
 #>   Dependent Variable         t       df              p         d   CI_lower
 #> 1                mpg -3.767123 18.33225 0.001373638333 -1.477947 -2.2659731
@@ -149,18 +151,18 @@ nice_contrasts(data = mtcars,
 contrasts
 #>   Dependent Variable Comparison df         t              p        dR
 #> 1                mpg      4 - 8 28  3.663188 0.001028617005  3.031774
-#> 2                mpg      6 - 8 28  3.640418 0.001092088865  1.245144
-#> 3                mpg      4 - 6 28 -4.861413 0.000040511099  1.786630
-#> 4               disp      4 - 8 28  1.290359 0.207480642577 -3.467937
-#> 5               disp      6 - 8 28 -6.040561 0.000001640986 -2.427185
+#> 2                mpg      6 - 8 28  1.290359 0.207480642577  1.245144
+#> 3                mpg      4 - 6 28  3.640418 0.001092088865  1.786630
+#> 4               disp      4 - 8 28 -6.040561 0.000001640986 -3.467937
+#> 5               disp      6 - 8 28 -4.861413 0.000040511099 -2.427185
 #> 6               disp      4 - 6 28 -2.703423 0.011534398020 -1.040753
-#>     CI_lower  CI_upper
-#> 1  2.1377454  5.663733
-#> 2  0.6750781  2.459834
-#> 3  1.0391995  4.017140
-#> 4 -4.9961142 -2.474849
-#> 5 -3.8102196 -1.396722
-#> 6 -1.8332830 -0.502074
+#>     CI_lower   CI_upper
+#> 1  2.0931825  5.4521491
+#> 2  0.7276065  2.3983961
+#> 3  1.0353053  3.8313294
+#> 4 -4.9000782 -2.4588340
+#> 5 -3.7025698 -1.4598208
+#> 6 -1.7260912 -0.4571215
 
 # Format contrasts results
 nice_table(contrasts, highlight = .001)
@@ -306,8 +308,8 @@ Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
 ## Visualization
 
-All plots can be saved with the `ggsave()` function. They are `ggplot2`
-objects so can be modified as such.
+All plots can be saved with the `ggplot2::ggsave()` function. They are
+`ggplot2` objects so can be modified as such.
 
 ## `nice_violin`
 
@@ -330,8 +332,8 @@ nice_violin(data = ToothGrowth,
 ``` r
 
 # Save plot
-ggsave('niceplot.pdf', width = 7, height = 7, unit = 'in', 
-       dpi = 300, path = "D:/R treasures/")
+ggplot2::ggsave('niceplot.pdf', width = 7, height = 7, unit = 'in', 
+                dpi = 300, path = "D:/R treasures/")
 ```
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/violin>
@@ -387,7 +389,7 @@ overlap_circle(6.84)
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/circles>
 
-## `cormatrix_excel2`
+## `cormatrix_excel`
 
 Easily output a correlation matrix and export it to Microsoft Excel,
 with the first row and column frozen, and correlation coefficients
@@ -396,7 +398,7 @@ blue); 0.2-0.4: medium (orange/blue); 0.4-1.0: large (red/dark blue)).
 
 ``` r
 
-cormatrix_excel2(infert)
+cormatrix_excel(infert, "cormatrix1")
 #> # Correlation Matrix (pearson-method)
 #> 
 #> Parameter      |      age |   parity |  induced |     case | spontaneous |  stratum | pooled.stratum
@@ -411,7 +413,7 @@ cormatrix_excel2(infert)
 #> 
 #> p-value adjustment method: none
 #> 
-#>  [Correlation matrix 'cormatrix.xlsx' has been saved to working directory (or where specified).]
+#>  [Correlation matrix 'cormatrix1.xlsx' has been saved to working directory (or where specified).]
 #> NULL
 ```
 
@@ -444,8 +446,6 @@ df <- data.frame(scale1_Q1 = c(sample(c(NA, 1:6), replace = TRUE), NA, NA),
 
 # Then select your scales by name
 nice_na(df, scales = c("scale1", "scale2", "scale3"))
-#> Warning in nice_na(df, scales = c("scale1", "scale2", "scale3")): Some variables
-#> are not numeric. They are ignored for calculating the `all_na` column.
 #>                   var items na cells na_percent na_max na_max_percent all_na
 #> 1 scale1_Q1:scale1_Q3     3  6    27      22.22      3            100      2
 #> 2 scale2_Q1:scale2_Q3     3  9    27      33.33      3            100      2
@@ -454,10 +454,144 @@ nice_na(df, scales = c("scale1", "scale2", "scale3"))
 
 # Or whole dataframe
 nice_na(df)
-#> Warning in nice_na(df): Some variables are not numeric. They are ignored for
-#> calculating the `all_na` column.
 #>                   var items na cells na_percent na_max na_max_percent all_na
 #> 1 scale1_Q1:scale3_Q3     9 23    81       28.4      9            100      2
+```
+
+## `extract_duplicates`
+
+Extracts ALL duplicates (including the first one, contrary to
+`duplicated` or `dplyr::distinct`) to a data frame for visual
+inspection.
+
+``` r
+df1 <- data.frame(
+   id = c(1, 2, 3, 1, 3),
+   item1 = c(NA, 1, 1, 2, 3),
+   item2 = c(NA, 1, 1, 2, 3),
+   item3 = c(NA, 1, 1, 2, 3)
+)
+df1
+#>   id item1 item2 item3
+#> 1  1    NA    NA    NA
+#> 2  2     1     1     1
+#> 3  3     1     1     1
+#> 4  1     2     2     2
+#> 5  3     3     3     3
+
+extract_duplicates(df1, id = "id")
+#>   Row id item1 item2 item3 count_na
+#> 1   1  1    NA    NA    NA        3
+#> 2   4  1     2     2     2        0
+#> 3   3  3     1     1     1        0
+#> 4   5  3     3     3     3        0
+```
+
+## `best_duplicate`
+
+Extracts the “best” duplicate: the one with the fewer number of missing
+values (in case of ties, picks the first one).
+
+``` r
+best_duplicate(df1, id = "id")
+#> (2 duplicates removed)
+#>   id item1 item2 item3
+#> 1  1     2     2     2
+#> 2  2     1     1     1
+#> 3  3     1     1     1
+```
+
+## `scale_mad`
+
+Scale and center (“standardize”) data based on the median absolute
+deviation.
+
+``` r
+scale_mad(mtcars$mpg)
+#>  [1]  0.33262558  0.33262558  0.66525116  0.40654238 -0.09239599 -0.20327119
+#>  [7] -0.90548075  0.96091834  0.66525116  0.00000000 -0.25870878 -0.51741757
+#> [13] -0.35110478 -0.73916796 -1.62616950 -1.62616950 -0.83156395  2.43925425
+#> [19]  2.06967028  2.71644224  0.42502157 -0.68373036 -0.73916796 -1.09027273
+#> [25]  0.00000000  1.49681511  1.25658552  2.06967028 -0.62829276  0.09239599
+#> [31] -0.77612635  0.40654238
+```
+
+## `find_mad`
+
+Identify outliers based on (e.g.,) 3 median absolute deviations (MAD).
+
+``` r
+find_mad(data = mtcars, col.list = names(mtcars), criteria = 3)
+#> 20 outlier(s) based on 3 median absolute deviations for variable(s): 
+#>  mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb 
+#> 
+#> The following participants were considered outliers for more than one variable: 
+#> 
+#>   Row n
+#> 1   3 2
+#> 2   9 2
+#> 3  18 2
+#> 4  19 2
+#> 5  20 2
+#> 6  26 2
+#> 7  28 2
+#> 8  31 2
+#> 9  32 2
+#> 
+#> Outliers per variable: 
+#> 
+#> $qsec
+#>   Row qsec_mad
+#> 1   9 3.665557
+#> 
+#> $vs
+#>    Row vs_mad
+#> 1    3    Inf
+#> 2    4    Inf
+#> 3    6    Inf
+#> 4    8    Inf
+#> 5    9    Inf
+#> 6   10    Inf
+#> 7   11    Inf
+#> 8   18    Inf
+#> 9   19    Inf
+#> 10  20    Inf
+#> 11  21    Inf
+#> 12  26    Inf
+#> 13  28    Inf
+#> 14  32    Inf
+#> 
+#> $am
+#>    Row am_mad
+#> 1    1    Inf
+#> 2    2    Inf
+#> 3    3    Inf
+#> 4   18    Inf
+#> 5   19    Inf
+#> 6   20    Inf
+#> 7   26    Inf
+#> 8   27    Inf
+#> 9   28    Inf
+#> 10  29    Inf
+#> 11  30    Inf
+#> 12  31    Inf
+#> 13  32    Inf
+#> 
+#> $carb
+#>   Row carb_mad
+#> 1  31 4.046945
+```
+
+## `winsorize_mad`
+
+Winsorize outliers based on (e.g.,) 3 median absolute deviations (MAD).
+
+``` r
+winsorize_mad(mtcars$qsec, criteria = 3)
+#>  [1] 16.46000 17.02000 18.61000 19.44000 17.02000 20.22000 15.84000 20.00000
+#>  [9] 21.95765 18.30000 18.90000 17.40000 17.60000 18.00000 17.98000 17.82000
+#> [17] 17.42000 19.47000 18.52000 19.90000 20.01000 16.87000 17.30000 15.41000
+#> [25] 17.05000 18.90000 16.70000 16.90000 14.50000 15.50000 14.60000 18.60000
 ```
 
 ## `nice_reverse`
@@ -468,7 +602,6 @@ answers.
 ``` r
 # Reverse score of 5 with a maximum score of 5
 nice_reverse(5, 5)
-#> Note: If your scale minimum score is not '1', please specify it in the 'min' argument
 #> [1] 1
 
 # Reverse scores with maximum = 4 and minimum = 0
@@ -570,12 +703,10 @@ group having variance four times bigger than any of the other groups.
 nice_var(data = iris,
          variable = "Sepal.Length",
          group = "Species")
-#> # A tibble: 1 × 7
-#> # Rowwise: 
-#>   Variable     Setosa Versicolor Virginica Variance.ratio Criteria Heterosceda…¹
-#>   <chr>         <dbl>      <dbl>     <dbl>          <dbl>    <dbl> <lgl>        
-#> 1 Sepal.Length  0.124      0.266     0.404            3.3        4 FALSE        
-#> # … with abbreviated variable name ¹​Heteroscedastic
+#>       Variable Setosa Versicolor Virginica Variance.ratio Criteria
+#> 1 Sepal.Length  0.124      0.266     0.404            3.3        4
+#>   Heteroscedastic
+#> 1           FALSE
 ```
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/assumptions>

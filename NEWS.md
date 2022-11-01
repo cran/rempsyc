@@ -1,4 +1,37 @@
-## 0.0.9
+# rempsyc 0.1.0
+* CRAN resubmission!
+
+## rempsyc 0.0.9.9
+* `nice_contrasts`: corrects a bug whereas the effect sizes appeared in the wrong order.
+
+## rempsyc 0.0.9.8
+* `nice_violin` gets some love after receiving its first citation (Jensen & Westergaard, 2022; https://doi.org/10.1111/lang.12525; yeah!!). It now defaults to *not* using bootstrapping per default, so it now needs to be requested explicitly. The bootstrapping method (BCa) is now specified in the documentation, and it is also clarified that the bootstrapping only applies to the confidence interval (not e.g., the mean). Underlying code is also simplified. Finally, a bug is fixed whereas the function used bootstrapping even when `boot` was set to `FALSE`.
+
+## rempsyc 0.0.9.7
+* We move `ggplot2` from a hard (imported) dependency to a soft (suggested) one, since many people seem to be using `nice_table` over the plotting features. And given the recent `isoband` CRAN dependency events.
+
+## rempsyc 0.0.9.6
+* We get rid of `car_Anova` and `lmsupport_modeleffectsizes` and now compute the sr2 ourselves! With the help of our friends `insight` and `performance`.
+
+## rempsyc 0.0.9.5
+* `rempsyc` gets lighter, as we get rid of the rather large `car` package dependency (by incorporating the single function we were using, `Anova`), and move other packages (`boot`, `lmtest`, `ggrepel`, `ggsignif`, and `qqplotr`) from required to suggested packages.
+
+## rempsyc 0.0.9.4
+* `nice_table`: automatic formatting (of p-values, confidence intervals, etc.) now supports more than two levels of headers (with the `separate.header` argument).
+
+## rempsyc 0.0.9.3
+* Now that `openxlsx2` is on CRAN, `cormatrix_excel2` replaces `cormatrix_excel` (and `rempsyc` package does not rely on an external GitHub dependency anymore, yeah!).
+
+## rempsyc 0.0.9.2
+* `nice_table`: Multilevel headings, with the `separate.header` argument, now supports automatic formatting (of p-values, confidence intervals, etc.).
+
+## rempsyc 0.0.9.1
+* `nice_table`: 
+    * fixed sr2 incorrectly showing leading zero.
+    * new argument: `col.format.ci`, to format confidence intervals (accepts lists of lower and upper thresholds)
+* `find_mad` and `nice_assumptions`: fixed printing method
+
+# rempsyc 0.0.9
 * CRAN resubmission!
 
 ## rempsyc 0.0.8.2
@@ -11,10 +44,10 @@
 * New function: `best_duplicate`, to keep only the best duplicate based on the number of missing values
 * nice_na: `all_na` output column now also counts non-numeric variables
 
-## rempsyc 0.0.8
+# rempsyc 0.0.8
 * CRAN resubmission!
 
-## rempsyc 0.0.7
+# rempsyc 0.0.7
 * First CRAN submission!
 * This requires bumping the package version to 2 decimals only.
 
@@ -37,7 +70,7 @@
 ## rempsyc 0.0.6.1
 * `find_mad`: New argument `mad.scores` to return robust zscore (MAD) scores instead of raw scores (now default to TRUE).
 
-## rempsyc 0.0.6.0
+# rempsyc 0.0.6
 * `nice_density`: Now uses the Sturges method to define the optimal number of bins automatically. Also adds two new arguments: `breaks.auto = TRUE`, if one does not want to use the Sturges method, and `bins = 30`, to define bins manually, if needed.
 
 ## rempsyc 0.0.5.9
@@ -80,7 +113,7 @@
     * Shortened line codes to < 80 characters.
     * Replaced 1:length(...) or 1:nrow(...) by seq_along(...).
 
-## rempsyc 0.0.5.0
+# rempsyc 0.0.5
 * `nice_na`: added scales argument to specify specific scales
 
 ## rempsyc 0.0.4.9
@@ -111,7 +144,7 @@
 ## rempsyc 0.0.4.1
 * `find_mad`: corrected a bug whereas having a dataframe with no outliers in certain situations generated an error
 
-## rempsyc 0.0.4.0
+# rempsyc 0.0.4
 * `nice_density` and `nice_normality`: added the `histogram` option to add an histogram to the density plot.
 
 ## rempsyc 0.0.3.9
@@ -143,7 +176,7 @@
 ## rempsyc 0.0.3.1
 * new functions for the median absolute deviation (MAD): `find_mad` to find outliers based on the MAD, `scale_mad` to scale (standardize) data based on the MAD, and winsorize_mad to winsorize (bring outliers in +/3 SD) based on the MAD.
 
-## rempsyc 0.0.3.0
+# rempsyc 0.0.3
 * `nice_table`: brought a correction to the automatic 95% CI so that when numbers are rounded to 0, the zeros still show (e.g., 0.20 instead of 0.2).
 
 ## rempsyc 0.0.2.9
@@ -173,7 +206,6 @@
 * Added warning to `nice_t_test` informing users about the Welch t-test being used per default (through base R `t.test`'s default) and how to change it. Also added option to turn off this warning.
 
 ## rempsyc 0.0.2.2
-
 * new function: `nice_lm` to format any existing `lm` model object in a proper format for `nice_table`, including sr2
 * new function: `nice_lm_slopes` to format simple slopes for any existing `lm` model object in a proper format for `nice_table`, including sr2
 * `nice_mod` and `nice_slopes`: 
@@ -185,7 +217,7 @@
 ## rempsyc 0.0.2.1
 * `nice_mod` and `nice_slopes`: Added an argument `b.label` to rename b, e.g., to capital B if using standardized data for it to be converted to the Greek beta symbol automatically in the `nice_table` function.
 
-## rempsyc 0.0.2.0
+# rempsyc 0.0.2
 * nice_mod and nice_slopes: Corrected a bug whereas having column names with periods would cut off the variable names before the dots because of the automatic correction of the interaction term row names which contain periods as well.
 
 ## rempsyc 0.0.1.9
@@ -227,7 +259,7 @@
 ## rempsyc 0.0.1.1
 * added new function: `nice_reverse()`
 
-## rempsyc 0.0.0.9
+# rempsyc 0.0.1
 * integrated `rcompanion::groupwiseMean` internally with documentation
 * removed `lmSupport_modelEffectSizes` from exports to use as internal function only
 * removed `crayon` package dependency

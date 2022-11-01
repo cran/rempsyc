@@ -29,7 +29,8 @@ table.stats
                        signif_xmax = c("virginica", "versicolor", "virginica")))
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  ggsave('Figure 1.pdf', figure, width = 7, height = 7, unit = 'in', dpi = 300)
+#  ggplot2::ggsave('Figure 1.pdf', figure, width = 7, height = 7,
+#                  unit = 'in', dpi = 300)
 
 ## -----------------------------------------------------------------------------
 data <- read.csv("https://osf.io/qkmnp//?action=download", header=TRUE)
@@ -46,6 +47,7 @@ table.stats <- nice_contrasts(response = DV,
                               group = "Group",
                               data = data)
 table.stats
+
 
 ## -----------------------------------------------------------------------------
 table.stats[1] <- rep(c("Peripheral Responsivity (QCAE)",
@@ -114,6 +116,6 @@ library(ggpubr)
                      ncol = 2, nrow = 2))
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  ggsave('Figure 1.pdf', figure, width = 14, height = 14,
-#         unit = 'in', dpi = 300)
+#  ggplot2::ggsave('Figure 1.pdf', figure, width = 14, height = 14,
+#                  unit = 'in', dpi = 300)
 

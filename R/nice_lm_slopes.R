@@ -19,8 +19,9 @@
 #'
 #' @keywords moderation interaction regression
 #' @return A formatted dataframe of the simple slopes of the specified lm model,
-#'         with DV, levels of IV, degrees of freedom, regression coefficient, t-value,
-#'         p-value, and the effect size, the semi-partial correlation squared.
+#'         with DV, levels of IV, degrees of freedom, regression coefficient,
+#'         t-value, p-value, and the effect size, the semi-partial correlation
+#'         squared.
 #' @export
 #' @examples
 #' # Make and format model
@@ -79,7 +80,7 @@ nice_lm_slopes <- function(model,
   })
   df.list <- lapply(models.list.lows, function(x) x[["df.residual"]])
   ES.list <- lapply(models.list.lows, function(x) {
-    lmSupport_modelEffectSizes(x, Print = FALSE)$Effects[-1, 4]
+    sr2(x)$sr2
   })
   stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
   stats.list <- lapply(stats.list, function(x) x[predictor, ])
@@ -94,7 +95,7 @@ nice_lm_slopes <- function(model,
   })
   df.list <- lapply(models.list, function(x) x[["df.residual"]])
   ES.list <- lapply(models.list, function(x) {
-    lmSupport_modelEffectSizes(x, Print = FALSE)$Effects[-1, 4]
+    sr2(x)$sr2
   })
   stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
   stats.list <- lapply(stats.list, function(x) x[predictor, ])
@@ -119,7 +120,7 @@ nice_lm_slopes <- function(model,
   })
   df.list <- lapply(models.list.highs, function(x) x[["df.residual"]])
   ES.list <- lapply(models.list.highs, function(x) {
-    lmSupport_modelEffectSizes(x, Print = FALSE)$Effects[-1, 4]
+    sr2(x)$sr2
   })
   stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
   stats.list <- lapply(stats.list, function(x) x[predictor, ])
