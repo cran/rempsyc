@@ -1,3 +1,47 @@
+# rempsyc 0.1.1
+* CRAN resubmission!
+
+## rempsyc 0.1.0.9
+* `nice_assumptions`: now supports list objects, and does not print the interpretation message anymore since it is available from the documentation.
+* `nice_var`: now supports list objects.
+
+## rempsyc 0.1.0.8
+* `nice_violin` and `nice_contrasts`: Now correctly handle missing values.
+* New function! `nice_lm_contrasts`, to handle more complex contrast models involving e.g., interactions between variables (similar to `nice_contrasts`).
+
+## rempsyc 0.1.0.7
+* `nice_table`: 
+  * `footnote` argument is renamed to simply `note` since this is what it is called in APA table language.
+  * Fixed a bug whereas the `note`/`footnote` added an extra empty invisible row at the end.
+  * Reduced cyclomatic complexity internally (swapped `if` statements for functions) dramatically (from 85 to 2).
+* `nice_contrasts`
+  * Default effect size changed to regular Cohen's *d*, and the robust Cohen's *d* (and other effects) can now be specified with the `effect.type` argument.
+
+## rempsyc 0.1.0.6
+* Following `easystats`'s policy of minimal reliance on external dependencies, we attempt to once again change a few more packages from hard to soft dependencies: `flextable`, `effectsize`, `performance`, `insight`, and `methods`. So we are left only with the basic blocks for coding: `dplyr` and `rlang`. For `flextable`, this is a breaking change for saving tables, since we now need to specify `flextable::save_as_docx`. However, this change makes sense because (1) we used `flextable` for only one function, (2) some users rely on `rempsyc` for plots and don't use tables, (3) this is consistent with how we are saving `ggplot2` plots already, and (4) it also gives credit to the `flextable` package, as this is the powerhouse that produces the tables under the hood.
+* `nice_violin` now provides more informative error messages if the response or group variables are misspelled.
+
+## rempsyc 0.1.0.5
+* `nice_lm`, `nice_mod`, `nice_lm_slopes`, and `nice_slopes` now use "two.sided" as alternative for the sr2 effect size confidence interval, to facilitate interpretation and in accordance with current norms in psychology.
+
+## rempsyc 0.1.0.4
+* Since `easystats` added a new function to calculate the sr2, `effectsize::r2_semipartial`, `rempsyc` now relies on that function. First, it has the advantage of also providing a confidence interval for the sr2. Second, it also fixes a bug when using factors in `lm` models that was introduced when switching from `car::Anova` to manual calculation via the formula interface.
+* Accordingly, `rempsyc::sr2` becomes deprecated and will be removed completely in the next major version, please use `effectsize::r2_semipartial`.
+* `nice_mod` and `nice_lm_slopes` now use `nice_lm` internally to reduce code redundancy and shorten the code base (and `nice_slopes` uses `nice_lm_slopes` internally).
+* To align with other package dependencies, `rempsyc` now requires `R >= 3.6`
+* `nice_reverse` loses its `warning` parameter, as the warning seems unnecessary (and annoying to some), given all relevant information is available from the documentation.
+
+## rempsyc 0.1.0.3
+* `nice_table` now only keeps the first occurrence of repeated (duplicated) dependent variables, and merges (and centers). Only works for a column called "Dependent Variables". For columns named "Predictor" and "Term", now also converts colons ":" to the multiplication symbol, "×".
+* `outliers_plot` changes name to `plot_outliers`, to be consistent with the verb naming approach.
+
+## rempsyc 0.1.0.2
+* `nice_varplot` and `nice_var`: Now ignores missing values when calculating variance.
+
+## rempsyc 0.1.0.1
+* New function to visualize outliers: `outliers_plot`, which generates a violin scatter plot (dot plot) and adds lines for +/- 3 MAD (or SD, based on selected method). Importantly, supports plotting by group.
+* `nice_violin`: at some point in time, it supported a single group (or no group), but this feature was lost at some point. It is now back.
+
 # rempsyc 0.1.0
 * CRAN resubmission!
 

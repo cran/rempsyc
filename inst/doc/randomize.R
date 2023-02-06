@@ -44,7 +44,7 @@ head(nice_randomized_subjects)
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  runsheet <- nice_table(nice_randomized_subjects)
-#  save_as_docx(runsheet, path = "runsheet.docx")
+#  flextable::save_as_docx(runsheet, path = "runsheet.docx")
 #  # Change the path to where you would like to save it.
 #  # If you copy-paste your path name, remember to
 #  # use "R" slashes ('/' rather than '\').

@@ -5,6 +5,9 @@ date: "December 25, 2020"
 output:
   rmarkdown::html_vignette:
     toc: true
+    md_extensions: [ 
+      "-autolink_bare_uris" 
+    ]
 vignette: >
   %\VignetteIndexEntry{Quickly test linear regression assumptions}
   %\VignetteEngine{knitr::rmarkdown}
@@ -40,7 +43,7 @@ check_model(model)
 
 Wonderful! And efficient. However, sometimes, for different reasons, someone might want to check assumptions with an objective test. Testing each assumption one by one is kind of time-consuming, so I made a convenience function to accelerate this process.
 
-Just a **warning** before jumping into objective assumption tests. Note these tests are generally NOT recommended! With a large sample size, objective assumption tests will be OVER-sensitive to deviations from expected values, while with a small sample size, the objective assumption tests will be UNDER-powered to detect real, existing deviations. It can also mask other visual patterns not reflected in a single number. It is thus recommended to use visual assessment of diagnostic plots instead (e.g., see [Kozak & Piepho, 2018](https://doi.org/10.1111/jac.12220); [Schucany & Ng, 2006](https://doi.org/10.1080/03610920600853308)). For a quick and accessible argument against tests of normality specifically, see <u>[this source](https://towardsdatascience.com/stop-testing-for-normality-dba96bb73f90)</u>.
+Just a **warning** before jumping into objective assumption tests. Note these tests are generally NOT recommended! With a large sample size, objective assumption tests will be OVER-sensitive to deviations from expected values, while with a small sample size, the objective assumption tests will be UNDER-powered to detect real, existing deviations. It can also mask other visual patterns not reflected in a single number. It is thus recommended to use visual assessment of diagnostic plots instead (e.g., see Kozak & Piepho, 2018, https://doi.org/10.1111/jac.12220; [Schucany & Ng, 2006](https://doi.org/10.1080/03610920600853308)). For a quick and accessible argument against tests of normality specifically, see <u>[this source](https://towardsdatascience.com/stop-testing-for-normality-dba96bb73f90)</u>.
 
 ### Getting Started
 
@@ -64,6 +67,8 @@ View(nice_assumptions(model))
 nice_table(nice_assumptions(model), col.format.p = 2:4)
 ```
 
+> Interpretation: (p) values < .05 imply assumptions are not respected. Diagnostic is how many assumptions are not respected for a given model or variable.
+
 This function is particularly useful when testing several models simultaneously as it makes for a nice table of results. Let's make a short demonstration of this.
 
 ```{r}
@@ -74,7 +79,8 @@ formulas <- paste(DV, "~ mpg")
 # Make list of all models
 models.list <- lapply(X = formulas, FUN = lm, data = mtcars)
 # Make diagnostic table
-assumptions.table <- do.call("rbind", lapply(models.list, nice_assumptions))
+assumptions.table <- nice_assumptions(models.list)
+
 ```
 
 Use the Viewer for better results
@@ -171,6 +177,79 @@ nice_normality(data = iris,
                title = "Density (Sepal Length)")
 ```
 
+## Outliers
+
+To check outliers for categorical predictors, we can check for each group whether any observations is greater than 3 units. By default it uses median absolute deviations (MADs, with `method = "mad"`), based on the following publication:
+
+Leys, C., Klein, O., Bernard, P., & Licata, L. (2013). Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median. *Journal of Experimental Social Psychology*, *49*(4), 764–766. [https://doi.org/10.1016/j.jesp.2013.03.013](https://doi.org/10.1016/j.jesp.2013.03.013)
+
+### Make the basic plot
+
+```{r}
+plot_outliers(
+  airquality,
+  group = "Month",
+  response = "Ozone")
+```
+
+Be aware that checking outliers by group and not by group will yield different results, e.g.,:
+
+```{r}
+plot_outliers(
+  airquality,
+  response = "Ozone")
+```
+
+### Further customization
+
+Change (or reorder) colours, y-axis title, names of groups, or detection method.
+
+```{r}
+plot_outliers(
+  airquality,
+  group = "Month",
+  response = "Ozone",
+  method = "sd",
+  criteria = 3.29,
+  colours = c("white", "black", "purple", "grey", "pink"),
+  ytitle = "Ozone",
+  xtitle = "Month of the Year")
+```
+
+### Flagging outliers
+
+Outliers can also be identifed with `find_mad` and multiple variables:
+
+```{r}
+find_mad(airquality, names(airquality), criteria = 3)
+  
+```
+
+### Winsorizing outliers
+
+Outliers can also be winsorized with `winsorize_mad`, meaning that outlier values outside 3 MADs will be brought back to 3 MADs:
+
+```{r}
+winsorize_mad(airquality$Ozone, criteria = 3) |>
+  head(30)
+  
+```
+
+### Multivariate outliers
+
+For multivariate outliers, it is recommended to use the Minimum Covariance Determinant (MCD), as available in the `performance` package from `easystats` mentioned in the beginning of this post.
+
+```{r}
+
+check_outliers(na.omit(airquality), method = "mcd")
+
+```
+
+
+We note also that ideally the handling of outliers should be preregistered a priori. For more up-to-date recommendations on handling outliers, please see:
+
+Leys, C., Delacre, M., Mora, Y. L., Lakens, D., & Ley, C. (2019). How to classify, detect, and manage univariate and multivariate outliers, with emphasis on pre-registration. *International Review of Social Psychology*, *32*(1). [https://doi.org/10.5334/irsp.289](https://doi.org/10.5334/irsp.289)
+
 ## Homoscedasticity (equality of variance)
 
 To check homoscedasticity (equality of variance) for categorical predictors, we can check the variance within each group. We can use a rule of thumb that the variance of one group should not be four times that of another group. We can check that with this function which makes a table.
@@ -178,9 +257,9 @@ To check homoscedasticity (equality of variance) for categorical predictors, we 
 ### Make the basic table
 
 ```{r, eval = FALSE}
-View(nice_var(data=iris,
-              variable="Sepal.Length",
-              group="Species"))
+View(nice_var(data = iris,
+              variable = "Sepal.Length",
+              group = "Species"))
 ```
 
 ![](https://rempsyc.remi-theriault.com/images/blog_assumptions/var1.png)
@@ -192,7 +271,10 @@ Let's now try it for many variables to see how handy it can be.
 DV <- names(iris[1:4])
 
 # Make diagnostic table
-var.table <- do.call("rbind", lapply(DV, nice_var, data=iris, group="Species"))
+var.table <- nice_var(data = iris,
+                      variable = DV,
+                      group = "Species")
+
 ```
 
 Use the Viewer for better results (or export it to Word using my [nice_table() function](../articles/table.html))
@@ -230,4 +312,4 @@ nice_varplot(data = iris,
 
 ### Thanks for checking in
     
-Make sure to check out this page again if you use the code after a time or if you encounter errors, as I periodically update or improve the code. Feel free to contact me for comments, questions, or requests to improve this function at https://github.com/rempsyc/rempsyc/issues. See all tutorials here: https://remi-theriault.com/tutorials.
+Make sure to check out this page again if you use the code after a time or if you encounter errors, as I periodically update or improve the code. Feel free to contact me for comments, questions, or requests to improve this function at [https://github.com/rempsyc/rempsyc/issues](https://github.com/rempsyc/rempsyc/issues). See all tutorials here: [https://remi-theriault.com/tutorials](https://remi-theriault.com/tutorials).

@@ -1,9 +1,9 @@
 #' @title Choose the best duplicate
 #'
 #' @description Chooses the best duplicate, based on the
-#' duplicate with the fewer number of NA values. In case of ties,
-#' it picks the first duplicate, as it is the one most likely to
-#' be valid and authentic, given practice effects.
+#' duplicate with the smallest number of missing values. In case of
+#' ties, it picks the first duplicate, as it is the one most likely
+#' to be valid and authentic, given practice effects.
 #'
 #' @param data The data frame.
 #' @param id The ID variable for which to check for duplicates.
@@ -33,7 +33,6 @@ best_duplicate <- function(data, id) {
     group_by(.data[[id]]) %>%
     slice_min(.data$count_na) %>%
     distinct(.data[[id]], .keep_all = TRUE) %>%
-    ungroup() %>%
     select(all_of(og.names))
 
   good.data <- distinct(data, .data[[id]], .keep_all = TRUE)

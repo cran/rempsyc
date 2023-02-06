@@ -71,7 +71,7 @@ nice_varplot <- function(data,
   # Calculate variance
   var <- data %>%
     group_by(.data[[group]]) %>%
-    summarize(var = stats::var(.data[[variable]]))
+    summarize(var = stats::var(.data[[variable]], na.rm = TRUE))
   diff <- max(var[, "var"]) / min(var[, "var"])
   # Make annotation dataframe
   dat_text <- var %>%
@@ -92,8 +92,8 @@ nice_varplot <- function(data,
     ggplot2::geom_jitter(size = 2, width = 0.10) +
     ggplot2::annotate(
       geom = "text",
-      x = stats::median(seq_along(levels(data[[group]]))),
-      y = max(data[[variable]]),
+      x = stats::median(seq_along(levels(data[[group]])), na.rm = TRUE),
+      y = max(data[[variable]], na.rm = TRUE),
       label = paste0(
         "max/min = ",
         round(diff, 2),

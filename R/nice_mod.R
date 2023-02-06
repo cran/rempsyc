@@ -3,8 +3,7 @@
 #' @description Easily compute moderation analyses, with effect
 #' sizes, and format in publication-ready format.
 #'
-#' Note: this function uses the `modelEffectSizes` function from
-#' the `lmSupport` package to get the sr2 effect sizes.
+#' @inherit nice_lm details return
 #'
 #' @param data The data frame
 #' @param response The dependent variable.
@@ -17,13 +16,13 @@
 #' to the Greek beta symbol in the `nice_table` function).
 #' @param mod.id Logical. Whether to display the model number,
 #' when there is more than one model.
+#' @param ci.alternative Alternative for the confidence interval
+#' of the sr2. It can be either "two.sided (the default in this
+#' package), "greater", or "less".
 #' @param ... Further arguments to be passed to the `lm`
 #' function for the models.
 #'
 #' @keywords moderation interaction regression
-#' @return A formatted dataframe of the specified lm model, with DV, IV, degrees
-#'         of freedom, regression coefficient, t-value, p-value, and the effect
-#'         size, the semi-partial correlation squared.
 #' @export
 #' @examples
 #' # Make the basic table
@@ -75,7 +74,9 @@ nice_mod <- function(data,
                      covariates = NULL,
                      b.label = "b",
                      mod.id = TRUE,
+                     ci.alternative = "two.sided",
                      ...) {
+  rlang::check_installed("effectsize", reason = "for this function.")
   if (!missing(covariates)) {
     covariates.term <- paste("+", covariates, collapse = " ")
   } else {
@@ -91,33 +92,15 @@ nice_mod <- function(data,
     moderator2.term, covariates.term
   )
   models.list <- lapply(formulas, stats::lm, data = data, ...)
-  sums.list <- lapply(models.list, function(x) {
-    summary(x)$coefficients[-1, -2]
-  })
-  df.list <- lapply(models.list, function(x) x[["df.residual"]])
-  ES.list <- lapply(models.list, function(x) {
-    sr2(x)$sr2
-  })
-  stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
-  stats.list <- lapply(stats.list, function(x) {
-    x <- as.data.frame(x)
-    IV <- row.names(x)
-    x <- cbind(IV, x)
-  })
-  table.stats <- do.call(rbind.data.frame, stats.list)
-  response.names <- rep(response, each = nrow(sums.list[[1]]))
-  row.names(table.stats) <- NULL
-  table.stats <- cbind(response.names, table.stats)
-  good.names <- c(
-    "Dependent Variable", "Predictor",
-    "df", "b", "t", "p", "sr2"
-  )
-  if (length(models.list) > 1 & mod.id == TRUE) {
-    model.number <- rep(seq_along(models.list), times = lapply(sums.list, nrow))
-    table.stats <- cbind(model.number, table.stats)
-    names(table.stats) <- c("Model Number", good.names)
-  } else {
-    names(table.stats) <- good.names
+
+  table.stats <- lapply(models.list, nice_lm, ci.alternative = ci.alternative)
+  model.number.rows <- lapply(table.stats, nrow)
+  table.stats <- dplyr::bind_rows(table.stats)
+
+  if (length(models.list) > 1 && mod.id == TRUE) {
+    model.number <- rep(seq_along(models.list), times = model.number.rows)
+    table.stats <- stats::setNames(cbind(model.number, table.stats),
+                            c("Model Number", names(table.stats)))
   }
   if (!missing(b.label)) {
     names(table.stats)[names(

@@ -3,8 +3,7 @@
 #' @description Extracts simple slopes from `lm` model
 #' object and format for a publication-ready format.
 #'
-#' Note: this function uses the `modelEffectSizes` function
-#' from the `lmSupport` package to get the sr2 effect sizes.
+#' @inherit nice_lm details
 #'
 #' @param model The model to be formatted.
 #' @param predictor The independent variable.
@@ -14,14 +13,17 @@
 #' to the Greek beta symbol in the `nice_table` function).
 #' @param mod.id Logical. Whether to display the model number,
 #' when there is more than one model.
+#' @param ci.alternative Alternative for the confidence interval
+#' of the sr2. It can be either "two.sided (the default in this
+#' package), "greater", or "less".
 #' @param ... Further arguments to be passed to the `lm`
 #' function for the models.
 #'
 #' @keywords moderation interaction regression
 #' @return A formatted dataframe of the simple slopes of the specified lm model,
-#'         with DV, levels of IV, degrees of freedom, regression coefficient,
-#'         t-value, p-value, and the effect size, the semi-partial correlation
-#'         squared.
+#' with DV, levels of IV, degrees of freedom, regression coefficient,
+#' t-value, p-value, and the effect size, the semi-partial correlation
+#' squared, and its confidence interval.
 #' @export
 #' @examples
 #' # Make and format model
@@ -45,16 +47,14 @@ nice_lm_slopes <- function(model,
                            moderator,
                            b.label = "b",
                            mod.id = TRUE,
+                           ci.alternative = "two.sided",
                            ...) {
-  ifelse(class(model) == "list",
-    models.list <- model,
+  rlang::check_installed("effectsize", reason = "for this function.")
+  if (inherits(model, "list")) {
+    models.list <- model
+  } else {
     models.list <- list(model)
-  )
-
-  good.names <- c(
-    "Dependent Variable", "Predictor (+/-1 SD)",
-    "df", "b", "t", "p", "sr2"
-  )
+  }
 
   data.list <- lapply(models.list, function(x) {
     x$model
@@ -75,34 +75,18 @@ nice_lm_slopes <- function(model,
   models.list.lows <- lapply(seq(length(formulas.lows)), function(x) {
     lm(formulas.lows[[x]], data = data.list.lows[[x]], ...)
   })
-  sums.list <- lapply(models.list.lows, function(x) {
-    summary(x)$coefficients[-1, -2]
-  })
-  df.list <- lapply(models.list.lows, function(x) x[["df.residual"]])
-  ES.list <- lapply(models.list.lows, function(x) {
-    sr2(x)$sr2
-  })
-  stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
-  stats.list <- lapply(stats.list, function(x) x[predictor, ])
-  table.stats1 <- do.call(rbind.data.frame, stats.list)
-  predictor.names <- paste0(predictor, " (LOW-", moderator, ")")
-  table.stats1 <- cbind(DV.list, predictor.names, table.stats1)
-  names(table.stats1) <- good.names
+
+  table.stats1 <- lapply(models.list.lows, nice_lm,
+                         ci.alternative = ci.alternative)
+  table.stats1 <- dplyr::bind_rows(table.stats1)
+  table.stats1 <- dplyr::filter(table.stats1, .data$Predictor == {{predictor}})
+  table.stats1$Predictor <- paste0(predictor, " (LOW-", moderator, ")")
 
   # Calculate simple slopes for mean-level
-  sums.list <- lapply(models.list, function(x) {
-    summary(x)$coefficients[-1, -2]
-  })
-  df.list <- lapply(models.list, function(x) x[["df.residual"]])
-  ES.list <- lapply(models.list, function(x) {
-    sr2(x)$sr2
-  })
-  stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
-  stats.list <- lapply(stats.list, function(x) x[predictor, ])
-  table.stats2 <- do.call(rbind.data.frame, stats.list)
-  predictor.names <- paste0(predictor, " (MEAN-", moderator, ")")
-  table.stats2 <- cbind(DV.list, predictor.names, table.stats2)
-  names(table.stats2) <- good.names
+  table.stats2 <- lapply(models.list, nice_lm, ci.alternative = ci.alternative)
+  table.stats2 <- dplyr::bind_rows(table.stats2)
+  table.stats2 <- dplyr::filter(table.stats2, .data$Predictor == {{predictor}})
+  table.stats2$Predictor <- paste0(predictor, " (MEAN-", moderator, ")")
 
   # Calculate simple slopes for HIGHS
   data.list.highs <- lapply(data.list, function(x) {
@@ -115,19 +99,12 @@ nice_lm_slopes <- function(model,
   models.list.highs <- lapply(seq(length(formulas.highs)), function(x) {
     lm(formulas.highs[[x]], data = data.list.highs[[x]], ...)
   })
-  sums.list <- lapply(models.list.highs, function(x) {
-    summary(x)$coefficients[-1, -2]
-  })
-  df.list <- lapply(models.list.highs, function(x) x[["df.residual"]])
-  ES.list <- lapply(models.list.highs, function(x) {
-    sr2(x)$sr2
-  })
-  stats.list <- mapply(cbind, df.list, sums.list, ES.list, SIMPLIFY = FALSE)
-  stats.list <- lapply(stats.list, function(x) x[predictor, ])
-  table.stats3 <- do.call(rbind.data.frame, stats.list)
-  predictor.names <- paste0(predictor, " (HIGH-", moderator, ")")
-  table.stats3 <- cbind(DV.list, predictor.names, table.stats3)
-  names(table.stats3) <- good.names
+
+  table.stats3 <- lapply(models.list.highs, nice_lm,
+                         ci.alternative = ci.alternative)
+  table.stats3 <- dplyr::bind_rows(table.stats3)
+  table.stats3 <- dplyr::filter(table.stats3, .data$Predictor == {{predictor}})
+  table.stats3$Predictor <- paste0(predictor, " (HIGH-", moderator, ")")
 
   # Combine both dataframes for both LOWS and HIGHS
   table.stats <- rbind(table.stats1, table.stats2, table.stats3)
@@ -139,6 +116,8 @@ nice_lm_slopes <- function(model,
     c(1, 3, 2)
   ))
   table.stats <- table.stats[correct.order, ] # 1, 4, 7, 2, 5, 8, 3, 6, 9
+  table.stats <- dplyr::rename(table.stats,
+                               `Predictor (+/-1 SD)` = .data$Predictor)
 
   if (!missing(b.label)) {
     names(table.stats)[names(
@@ -146,9 +125,9 @@ nice_lm_slopes <- function(model,
     ) == "b"] <- b.label
   }
   if (length(models.list) > 1 & mod.id == TRUE) {
-    model.number <- rep(seq_along(models.list), times = lapply(sums.list, nrow))
-    table.stats <- cbind(model.number, table.stats)
-    names(table.stats) <- c("Model Number", good.names)
+    model.number <- rep(seq_along(models.list), each = 3)
+    table.stats <- stats::setNames(cbind(model.number, table.stats),
+                            c("Model Number", names(table.stats)))
   }
   row.names(table.stats) <- NULL
   table.stats

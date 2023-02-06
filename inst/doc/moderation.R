@@ -13,23 +13,25 @@ library(rempsyc)
 mtcars2 <- lapply(mtcars, scale) |> as.data.frame()
 
 ## -----------------------------------------------------------------------------
-nice_mod(data = mtcars2,
-         response = "mpg",
-         predictor = "gear",
-         moderator = "wt") -> moderations
+moderations <- nice_mod(
+  data = mtcars2,
+  response = "mpg",
+  predictor = "gear",
+  moderator = "wt")
 moderations
 
 ## -----------------------------------------------------------------------------
 (my_table <- nice_table(moderations, highlight = TRUE))
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  save_as_docx(my_table, path = "moderations.docx")
+#  flextable::save_as_docx(my_table, path = "moderations.docx")
 
 ## -----------------------------------------------------------------------------
-nice_slopes(data = mtcars2,
-            response = "mpg",
-            predictor = "gear",
-            moderator = "wt") -> slopes
+slopes <- nice_slopes(
+  data = mtcars2,
+  response = "mpg",
+  predictor = "gear",
+  moderator = "wt")
 slopes
 nice_table(slopes, highlight = TRUE)
 

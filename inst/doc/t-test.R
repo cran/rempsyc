@@ -16,10 +16,11 @@ nice_t_test(data = mtcars,
             warning = FALSE)
 
 ## -----------------------------------------------------------------------------
-nice_t_test(data = mtcars,
-            response = names(mtcars)[1:6],
-            group = "am",
-            warning = FALSE) -> t.test.results
+t.test.results <- nice_t_test(
+  data = mtcars,
+  response = names(mtcars)[1:6],
+  group = "am",
+  warning = FALSE)
 t.test.results
 
 ## -----------------------------------------------------------------------------
@@ -27,7 +28,7 @@ my_table <- nice_table(t.test.results)
 my_table
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  save_as_docx(my_table, path = "t-tests.docx")
+#  flextable::save_as_docx(my_table, path = "t-tests.docx")
 
 ## -----------------------------------------------------------------------------
 nice_t_test(data = mtcars,

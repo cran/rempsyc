@@ -4,7 +4,15 @@
 \alias{nice_contrasts}
 \title{Easy planned contrasts}
 \usage{
-nice_contrasts(response, group, covariates = NULL, data, bootstraps = 2000)
+nice_contrasts(
+  response,
+  group,
+  covariates = NULL,
+  data,
+  effect.type = "cohens.d",
+  bootstraps = 2000,
+  ...
+)
 }
 \arguments{
 \item{response}{The dependent variable.}
@@ -15,7 +23,12 @@ nice_contrasts(response, group, covariates = NULL, data, bootstraps = 2000)
 
 \item{data}{The data frame.}
 
+\item{effect.type}{What effect size type to use. One of "cohens.d" (default),
+"akp.robust.d", "unstandardized", "hedges.g", "cohens.d.sigma", or "r".}
+
 \item{bootstraps}{The number of bootstraps to use for the confidence interval}
+
+\item{...}{Arguments passed to \link[bootES:bootES]{bootES::bootES}.}
 }
 \value{
 A dataframe, with the selected dependent variable(s), comparisons of
@@ -28,7 +41,8 @@ Easily compute planned contrast analyses (pairwise
 comparisons similar to t-tests but more powerful when more than
 2 groups), and format in publication-ready format. Supports only
 three groups for the moment. In this particular case, the
-confidence intervals are bootstraped on the Robust Cohen's d.
+confidence intervals are bootstraped on chosen effect size
+(default to Cohen's d).
 }
 \details{
 Statistical power is lower with the standard \emph{t} test
@@ -38,6 +52,9 @@ because only the cases in the two groups are selected; and b)
 in the planned contrast the error term is smaller than it is
 with the standard \emph{t} test because it is based on all the cases
 (\href{https://web.pdx.edu/~newsomj/uvclass/ho_planned\%20contrasts.pdf}{source}).
+
+The effect size and confidence interval are calculated via
+\link[bootES:bootES]{bootES::bootES}.
 }
 \examples{
 # Basic example
@@ -71,12 +88,12 @@ nice_contrasts(
 }
 }
 \seealso{
+\code{\link{nice_lm_contrasts}},
 Tutorial: \url{https://rempsyc.remi-theriault.com/articles/contrasts}
 }
 \keyword{comparisons}
 \keyword{contrasts}
 \keyword{differences}
 \keyword{group}
-\keyword{internal}
 \keyword{pairwise}
 \keyword{planned}

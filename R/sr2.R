@@ -1,4 +1,6 @@
-#' Semi-Partial Correlation Squared (Delta R2)
+#' Semi-Partial Correlation Squared (Delta R2) [Deprecated]
+#'
+#' `r lifecycle::badge("deprecated")`
 #'
 #' Compute the semi-partial correlation squared (also known as the delta
 #' R2), for a `lm` model.
@@ -12,11 +14,16 @@
 #' @family effect size correlation
 #'
 #' @examples
+#' \dontrun{
 #' m <- lm(mpg ~ cyl + disp + hp * drat, data = mtcars)
 #' sr2(m)
+#' }
 #' @export
 
 sr2 <- function(model, ...) {
+  .Deprecated("effectsize::r2_semipartial")
+  rlang::check_installed(c("performance", "insight"),
+                         reason = "for this function.")
   data <- insight::get_data(model)
   response <- insight::find_response(model)
 
@@ -38,10 +45,8 @@ sr2 <- function(model, ...) {
     r_total - x$R2
   })
 
-
   data.frame(
     Parameter = list.parameters,
     sr2 = unlist(list.sr2)
   )
 }
-

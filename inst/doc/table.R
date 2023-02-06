@@ -10,8 +10,8 @@ library(rempsyc)
 nice_table(
   mtcars[1:3, ], 
   title = c("Table 1", "Motor Trend Car Road Tests"),
-  footnote = c("The data was extracted from the 1974 Motor Trend US magazine.",
-               "* p < .05, ** p < .01, *** p < .001"))
+  note = c("The data was extracted from the 1974 Motor Trend US magazine.",
+           "* p < .05, ** p < .01, *** p < .001"))
 
 ## -----------------------------------------------------------------------------
 # Standardize variables to get standardized coefficients
@@ -37,7 +37,7 @@ nice_table(stats.table)
 my_table <- nice_table(stats.table)
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  save_as_docx(my_table, path = "nice_tablehere.docx")
+#  flextable::save_as_docx(my_table, path = "nice_tablehere.docx")
 
 ## -----------------------------------------------------------------------------
 test <- head(mtcars, 3)
@@ -67,19 +67,21 @@ nice_table(stats.table)
 nice_table(stats.table, short = TRUE)
 
 ## -----------------------------------------------------------------------------
-nice_t_test(data = mtcars,
-            response = c("mpg", "disp", "drat"),
-            group = "am",
-            warning = FALSE) -> stats.table
+stats.table <- nice_t_test(
+  data = mtcars,
+  response = c("mpg", "disp", "drat"),
+  group = "am",
+  warning = FALSE)
 stats.table
 
 nice_table(stats.table)
 
 ## -----------------------------------------------------------------------------
-nice_mod(data = mtcars,
-         response = "mpg",
-         predictor = "gear",
-         moderator = "wt") -> stats.table
+stats.table <- nice_mod(
+  data = mtcars,
+  response = "mpg",
+  predictor = "gear",
+  moderator = "wt")
 stats.table
 
 nice_table(stats.table)
@@ -128,11 +130,11 @@ names(data)[-1] <- c(paste0("T1.", names(data[2:4])),
 
 # Get descriptive statistics
 library(dplyr)
-data %>%
+descriptive.data <- data %>%
   group_by(Species) %>% 
   summarize(across(T1.Sepal.Length:T2.Petal.Length, 
                    list(m = mean, sd = sd),
-                   .names = "{.col}.{.fn}")) -> descriptive.data
+                   .names = "{.col}.{.fn}"))
 
 # Rename the columns so we can merge them later
 names(descriptive.data) <- c("Species", rep(c("T1.M", "T1.SD"), 3),
@@ -192,7 +194,8 @@ nice_table(wide.data)
 nice_table(wide.data, separate.header = TRUE)
 
 ## -----------------------------------------------------------------------------
-names(wide.data)[-1] <- paste0(rep(c("Early.", "Late."), each = 6), names(wide.data)[-1])
+names(wide.data)[-1] <- paste0(rep(c("Early.", "Late."), each = 6), 
+                               names(wide.data)[-1])
 nice_table(wide.data)
 nice_table(wide.data, separate.header = TRUE)
 

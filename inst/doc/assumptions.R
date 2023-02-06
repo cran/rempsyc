@@ -34,7 +34,8 @@ formulas <- paste(DV, "~ mpg")
 # Make list of all models
 models.list <- lapply(X = formulas, FUN = lm, data = mtcars)
 # Make diagnostic table
-assumptions.table <- do.call("rbind", lapply(models.list, nice_assumptions))
+assumptions.table <- nice_assumptions(models.list)
+
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  View(assumptions.table)
@@ -83,17 +84,56 @@ nice_normality(data = iris,
                histogram = TRUE,
                title = "Density (Sepal Length)")
 
+## -----------------------------------------------------------------------------
+plot_outliers(
+  airquality,
+  group = "Month",
+  response = "Ozone")
+
+## -----------------------------------------------------------------------------
+plot_outliers(
+  airquality,
+  response = "Ozone")
+
+## -----------------------------------------------------------------------------
+plot_outliers(
+  airquality,
+  group = "Month",
+  response = "Ozone",
+  method = "sd",
+  criteria = 3.29,
+  colours = c("white", "black", "purple", "grey", "pink"),
+  ytitle = "Ozone",
+  xtitle = "Month of the Year")
+
+## -----------------------------------------------------------------------------
+find_mad(airquality, names(airquality), criteria = 3)
+  
+
+## -----------------------------------------------------------------------------
+winsorize_mad(airquality$Ozone, criteria = 3) |>
+  head(30)
+  
+
+## -----------------------------------------------------------------------------
+
+check_outliers(na.omit(airquality), method = "mcd")
+
+
 ## ---- eval = FALSE------------------------------------------------------------
-#  View(nice_var(data=iris,
-#                variable="Sepal.Length",
-#                group="Species"))
+#  View(nice_var(data = iris,
+#                variable = "Sepal.Length",
+#                group = "Species"))
 
 ## -----------------------------------------------------------------------------
 # Define our dependent variables
 DV <- names(iris[1:4])
 
 # Make diagnostic table
-var.table <- do.call("rbind", lapply(DV, nice_var, data=iris, group="Species"))
+var.table <- nice_var(data = iris,
+                      variable = DV,
+                      group = "Species")
+
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  View(var.table)

@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/rempsyc/rempsyc/workflows/R-CMD-check/badge.svg)](https://github.com/rempsyc/rempsyc/actions)
-[![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/ui#package:rempsyc)
+[![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/ui/#package:rempsyc)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rempsyc)](https://cran.r-project.org/package=rempsyc)
 [![Last-commit](https://img.shields.io/github/last-commit/rempsyc/rempsyc)](https://github.com/rempsyc/rempsyc/commits/main)
@@ -27,9 +27,9 @@ researchers in the psychological sciences. The package is still under
 active development. Feel free to open an issue to ask for help, report a
 bug, or request a feature.
 
--   [Release notes](https://rempsyc.remi-theriault.com/news/index.html)
--   [Development objectives (to-do
-    list)](https://rempsyc.remi-theriault.com/TODOS.html)
+- [Release notes](https://rempsyc.remi-theriault.com/news/index.html)
+- [Development objectives (to-do
+  list)](https://rempsyc.remi-theriault.com/TODOS.html)
 
 ## Installation
 
@@ -86,8 +86,8 @@ assumptions](#testing-assumptions)<a name = 'Testing assumptions'/>
 Make nice APA tables easily through a wrapper around the `flextable`
 package with sensical defaults and automatic formatting features.
 
-The tables can be saved with the `save_as_docx` function, and are
-`flextable` objects, and can be modified as such. The function also
+The tables can be saved with the `flextable::save_as_docx` function, and
+are `flextable` objects, and can be modified as such. The function also
 integrates with objects from the `broom` and `report` packages. Full
 tutorial: <https://rempsyc.remi-theriault.com/articles/table>
 
@@ -125,11 +125,11 @@ t_table <- nice_table(t.tests)
 t_table
 ```
 
-<img src="man/figures/README-t_table-1.png" width="60%" />
+<img src="man/figures/README-nice_t_test-1.png" width="60%" />
 
 ``` r
 # Save to word
-save_as_docx(t_table, path = "D:/R treasures/t_tests.docx")
+flextable::save_as_docx(t_table, path = "D:/R treasures/t_tests.docx")
 ```
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/t-test>
@@ -141,7 +141,7 @@ comparisons similar to t-tests but more powerful when more than 2
 groups), and format in publication-ready format. Supports multiple
 dependent variables at once (but supports only three groups for the
 moment). In this particular case, the confidence intervals are
-bootstraped around the Robust Cohen’s d.
+bootstraped around the Cohen’s d.
 
 ``` r
 nice_contrasts(data = mtcars,
@@ -149,26 +149,26 @@ nice_contrasts(data = mtcars,
                group = "cyl",
                covariates = "hp") -> contrasts
 contrasts
-#>   Dependent Variable Comparison df         t              p        dR
-#> 1                mpg      4 - 8 28  3.663188 0.001028617005  3.031774
-#> 2                mpg      6 - 8 28  1.290359 0.207480642577  1.245144
-#> 3                mpg      4 - 6 28  3.640418 0.001092088865  1.786630
-#> 4               disp      4 - 8 28 -6.040561 0.000001640986 -3.467937
-#> 5               disp      6 - 8 28 -4.861413 0.000040511099 -2.427185
-#> 6               disp      4 - 6 28 -2.703423 0.011534398020 -1.040753
+#>   Dependent Variable Comparison df         t              p         d
+#> 1                mpg      4 - 8 28  3.663188 0.001028617005  3.587739
+#> 2                mpg      6 - 8 28  1.290359 0.207480642577  1.440495
+#> 3                mpg      4 - 6 28  3.640418 0.001092088865  2.147244
+#> 4               disp      4 - 8 28 -6.040561 0.000001640986 -4.803022
+#> 5               disp      6 - 8 28 -4.861413 0.000040511099 -3.288726
+#> 6               disp      4 - 6 28 -2.703423 0.011534398020 -1.514296
 #>     CI_lower   CI_upper
-#> 1  2.0931825  5.4521491
-#> 2  0.7276065  2.3983961
-#> 3  1.0353053  3.8313294
-#> 4 -4.9000782 -2.4588340
-#> 5 -3.7025698 -1.4598208
-#> 6 -1.7260912 -0.4571215
+#> 1  2.7170373  4.5024428
+#> 2  0.8511956  2.0106199
+#> 3  1.3490153  3.0829491
+#> 4 -5.7651045 -3.7947737
+#> 5 -4.2630965 -2.1604816
+#> 6 -2.2324787 -0.9219754
 
 # Format contrasts results
 nice_table(contrasts, highlight = .001)
 ```
 
-<img src="man/figures/README-contrasts_table-1.png" width="70%" />
+<img src="man/figures/README-nice_contrasts-1.png" width="70%" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/contrasts>
 
@@ -179,10 +179,11 @@ publication-ready format. Supports multiple dependent variables and
 covariates at once.
 
 ``` r
-nice_mod(data = mtcars,
-         response = c("mpg", "disp"),
-         predictor = "gear",
-         moderator = "wt") -> moderations
+moderations <- nice_mod(
+  data = mtcars,
+  response = c("mpg", "disp"),
+  predictor = "gear",
+  moderator = "wt")
 moderations
 #>   Model Number Dependent Variable Predictor df          b          t          p
 #> 1            1                mpg      gear 28   5.615951  1.9437108 0.06204275
@@ -191,19 +192,19 @@ moderations
 #> 4            2               disp      gear 28  35.797623  0.6121820 0.54535707
 #> 5            2               disp        wt 28 160.930043  2.4364098 0.02144867
 #> 6            2               disp   gear:wt 28 -15.037022 -0.8140664 0.42247646
-#>           sr2
-#> 1 0.028488305
-#> 2 0.001395217
-#> 3 0.035022025
-#> 4 0.002737218
-#> 5 0.043355972
-#> 6 0.004840251
+#>           sr2     CI_lower   CI_upper
+#> 1 0.028488305 0.0000000000 0.08418650
+#> 2 0.001395217 0.0000000000 0.01331121
+#> 3 0.035022025 0.0003502202 0.09723370
+#> 4 0.002737218 0.0000000000 0.01919662
+#> 5 0.043355972 0.0004335597 0.11228977
+#> 6 0.004840251 0.0000000000 0.02679265
 
 # Format moderation results
 nice_table(moderations, highlight = TRUE)
 ```
 
-<img src="man/figures/README-mod_table-1.png" width="70%" />
+<img src="man/figures/README-nice_mod-1.png" width="70%" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -217,7 +218,8 @@ Supports multiple `lm` models as well.
 
 model1 <- lm(mpg ~ cyl + wt * hp, mtcars)
 model2 <- lm(qsec ~ disp + drat * carb, mtcars)
-nice_lm(list(model1, model2))
+mods <- nice_lm(list(model1, model2))
+mods
 #>   Model Number Dependent Variable Predictor df            b          t
 #> 1            1                mpg       cyl 27 -0.365239089 -0.7180977
 #> 2            1                mpg        wt 27 -7.627489287 -5.0146028
@@ -227,16 +229,21 @@ nice_lm(list(model1, model2))
 #> 6            2               qsec      drat 27  0.227692395  0.1968842
 #> 7            2               qsec      carb 27  1.154106215  0.7179431
 #> 8            2               qsec drat:carb 27 -0.477539959 -1.0825727
-#>               p          sr2
-#> 1 0.47886516037 0.0021596150
-#> 2 0.00002928375 0.1053130854
-#> 3 0.00113640283 0.0555024045
-#> 4 0.00322175341 0.0437733438
-#> 5 0.05861684483 0.0702566891
-#> 6 0.84539274511 0.0006984424
-#> 7 0.47895897531 0.0092872897
-#> 8 0.28857203297 0.0211165564
+#>               p          sr2     CI_lower   CI_upper
+#> 1 0.47886516037 0.0021596150 0.0000000000 0.01306786
+#> 2 0.00002928375 0.1053130854 0.0089876445 0.20163853
+#> 3 0.00113640283 0.0555024045 0.0005550240 0.11934768
+#> 4 0.00322175341 0.0437733438 0.0004377334 0.09898662
+#> 5 0.05861684483 0.0702566891 0.0000000000 0.19796621
+#> 6 0.84539274511 0.0006984424 0.0000000000 0.01347203
+#> 7 0.47895897531 0.0092872897 0.0000000000 0.05587351
+#> 8 0.28857203297 0.0211165564 0.0000000000 0.09136014
+
+# Format moderation results
+nice_table(mods, highlight = TRUE)
 ```
+
+<img src="man/figures/README-nice_lm-1.png" width="70%" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -247,10 +254,11 @@ and format in publication-ready format. Supports multiple dependent
 variables and covariates at once.
 
 ``` r
-nice_slopes(data = mtcars,
-            response = c("mpg", "disp"),
-            predictor = "gear",
-            moderator = "wt") -> simple.slopes
+simple.slopes <- nice_slopes(
+  data = mtcars,
+  response = c("mpg", "disp"),
+  predictor = "gear",
+  moderator = "wt")
 simple.slopes
 #>   Model Number Dependent Variable Predictor (+/-1 SD) df         b         t
 #> 1            1                mpg       gear (LOW-wt) 28  7.540509 2.0106560
@@ -259,19 +267,19 @@ simple.slopes
 #> 4            2               disp       gear (LOW-wt) 28 50.510710 0.6654856
 #> 5            2               disp      gear (MEAN-wt) 28 35.797623 0.6121820
 #> 6            2               disp      gear (HIGH-wt) 28 21.084536 0.5067498
-#>            p         sr2
-#> 1 0.05408136 0.030484485
-#> 2 0.06204275 0.028488305
-#> 3 0.08336403 0.024311231
-#> 4 0.51118526 0.003234637
-#> 5 0.54535707 0.002737218
-#> 6 0.61629796 0.001875579
+#>            p         sr2 CI_lower   CI_upper
+#> 1 0.05408136 0.030484485        0 0.08823243
+#> 2 0.06204275 0.028488305        0 0.08418650
+#> 3 0.08336403 0.024311231        0 0.07551496
+#> 4 0.51118526 0.003234637        0 0.02113980
+#> 5 0.54535707 0.002737218        0 0.01919662
+#> 6 0.61629796 0.001875579        0 0.01548357
 
 # Format simple slopes results
 nice_table(simple.slopes)
 ```
 
-<img src="man/figures/README-slopes_table-1.png" width="80%" />
+<img src="man/figures/README-nice_slopes-1.png" width="80%" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -287,7 +295,8 @@ can change).
 model1 <- lm(mpg ~ gear * wt, mtcars)
 model2 <- lm(disp ~ gear * wt, mtcars)
 my.models <- list(model1, model2)
-nice_lm_slopes(my.models, predictor = "gear", moderator = "wt")
+simple.slopes <- nice_lm_slopes(my.models, predictor = "gear", moderator = "wt")
+simple.slopes
 #>   Model Number Dependent Variable Predictor (+/-1 SD) df         b         t
 #> 1            1                mpg       gear (LOW-wt) 28  7.540509 2.0106560
 #> 2            1                mpg      gear (MEAN-wt) 28  5.615951 1.9437108
@@ -295,14 +304,19 @@ nice_lm_slopes(my.models, predictor = "gear", moderator = "wt")
 #> 4            2               disp       gear (LOW-wt) 28 50.510710 0.6654856
 #> 5            2               disp      gear (MEAN-wt) 28 35.797623 0.6121820
 #> 6            2               disp      gear (HIGH-wt) 28 21.084536 0.5067498
-#>            p         sr2
-#> 1 0.05408136 0.030484485
-#> 2 0.06204275 0.028488305
-#> 3 0.08336403 0.024311231
-#> 4 0.51118526 0.003234637
-#> 5 0.54535707 0.002737218
-#> 6 0.61629796 0.001875579
+#>            p         sr2 CI_lower   CI_upper
+#> 1 0.05408136 0.030484485        0 0.08823243
+#> 2 0.06204275 0.028488305        0 0.08418650
+#> 3 0.08336403 0.024311231        0 0.07551496
+#> 4 0.51118526 0.003234637        0 0.02113980
+#> 5 0.54535707 0.002737218        0 0.01919662
+#> 6 0.61629796 0.001875579        0 0.01548357
+
+# Format simple slopes results
+nice_table(simple.slopes)
 ```
+
+<img src="man/figures/README-nice_lm_slopes-1.png" width="80%" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -330,7 +344,6 @@ nice_violin(data = ToothGrowth,
 <img src="man/figures/README-nice_violin-1.png" width="60%" />
 
 ``` r
-
 # Save plot
 ggplot2::ggsave('niceplot.pdf', width = 7, height = 7, unit = 'in', 
                 dpi = 300, path = "D:/R treasures/")
@@ -403,15 +416,16 @@ cormatrix_excel(infert, "cormatrix1")
 #> 
 #> Parameter      |      age |   parity |  induced |     case | spontaneous |  stratum | pooled.stratum
 #> ----------------------------------------------------------------------------------------------------
-#> age            |  1.00*** |     0.08 |    -0.10 | 3.53e-03 |       -0.08 | -0.21*** |        -0.17**
-#> parity         |     0.08 |  1.00*** |  0.45*** | 8.91e-03 |     0.31*** | -0.31*** |           0.12
-#> induced        |    -0.10 |  0.45*** |  1.00*** |     0.02 |    -0.27*** |    -0.10 |          0.16*
-#> case           | 3.53e-03 | 8.91e-03 |     0.02 |  1.00*** |     0.36*** | 3.83e-03 |       4.86e-03
-#> spontaneous    |    -0.08 |  0.31*** | -0.27*** |  0.36*** |     1.00*** |     0.06 |        0.21***
-#> stratum        | -0.21*** | -0.31*** |    -0.10 | 3.83e-03 |        0.06 |  1.00*** |        0.75***
-#> pooled.stratum |  -0.17** |     0.12 |    0.16* | 4.86e-03 |     0.21*** |  0.75*** |        1.00***
+#> age            |          |     0.08 |    -0.10 | 3.53e-03 |       -0.08 | -0.21*** |        -0.17**
+#> parity         |     0.08 |          |  0.45*** | 8.91e-03 |     0.31*** | -0.31*** |           0.12
+#> induced        |    -0.10 |  0.45*** |          |     0.02 |    -0.27*** |    -0.10 |          0.16*
+#> case           | 3.53e-03 | 8.91e-03 |     0.02 |          |     0.36*** | 3.83e-03 |       4.86e-03
+#> spontaneous    |    -0.08 |  0.31*** | -0.27*** |  0.36*** |             |     0.06 |        0.21***
+#> stratum        | -0.21*** | -0.31*** |    -0.10 | 3.83e-03 |        0.06 |          |        0.75***
+#> pooled.stratum |  -0.17** |     0.12 |    0.16* | 4.86e-03 |     0.21*** |  0.75*** |               
 #> 
 #> p-value adjustment method: none
+#> 
 #> 
 #>  [Correlation matrix 'cormatrix1.xlsx' has been saved to working directory (or where specified).]
 #> NULL
@@ -694,6 +708,30 @@ nice_normality(data = iris,
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/assumptions>
 
+## `plot_outliers`
+
+Visually check outliers based on (e.g.) +/- 3 MAD (median absolute
+deviations) or SD (standard deviations).
+
+``` r
+plot_outliers(airquality, 
+              group = "Month",
+              response = "Ozone")
+```
+
+<img src="man/figures/README-plot_outliers-1.png" width="70%" />
+
+``` r
+
+plot_outliers(airquality,
+              response = "Ozone",
+              method = "sd")
+```
+
+<img src="man/figures/README-plot_outliers-2.png" width="70%" />
+
+Full tutorial: <https://rempsyc.remi-theriault.com/articles/assumptions>
+
 ## `nice_var`
 
 Obtain variance per group as well as check for the rule of thumb of one
@@ -703,7 +741,7 @@ group having variance four times bigger than any of the other groups.
 nice_var(data = iris,
          variable = "Sepal.Length",
          group = "Species")
-#>       Variable Setosa Versicolor Virginica Variance.ratio Criteria
+#>        Species Setosa Versicolor Virginica Variance.ratio Criteria
 #> 1 Sepal.Length  0.124      0.266     0.404            3.3        4
 #>   Heteroscedastic
 #> 1           FALSE

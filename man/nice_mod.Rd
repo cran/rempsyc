@@ -13,6 +13,7 @@ nice_mod(
   covariates = NULL,
   b.label = "b",
   mod.id = TRUE,
+  ci.alternative = "two.sided",
   ...
 )
 }
@@ -36,20 +37,29 @@ to the Greek beta symbol in the \code{nice_table} function).}
 \item{mod.id}{Logical. Whether to display the model number,
 when there is more than one model.}
 
+\item{ci.alternative}{Alternative for the confidence interval
+of the sr2. It can be either "two.sided (the default in this
+package), "greater", or "less".}
+
 \item{...}{Further arguments to be passed to the \code{lm}
 function for the models.}
 }
 \value{
 A formatted dataframe of the specified lm model, with DV, IV, degrees
 of freedom, regression coefficient, t-value, p-value, and the effect
-size, the semi-partial correlation squared.
+size, the semi-partial correlation squared, and its confidence interval.
 }
 \description{
 Easily compute moderation analyses, with effect
 sizes, and format in publication-ready format.
-
-Note: this function uses the \code{modelEffectSizes} function from
-the \code{lmSupport} package to get the sr2 effect sizes.
+}
+\details{
+The effect size, sr2 (semi-partial correlation squared, also
+known as delta R2), is computed through \link[effectsize:r2_semipartial]{effectsize::r2_semipartial}.
+Please read the documentation for that function, especially regarding
+the interpretation of the confidence interval. In \code{rempsyc}, instead
+of using the default one-sided alternative ("greater"), we use the
+two-sided alternative.
 }
 \examples{
 # Make the basic table

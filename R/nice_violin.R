@@ -216,8 +216,23 @@ nice_violin <- function(data,
                         has.d = FALSE,
                         d.x = mean(c(comp1, comp2)) * 1.1,
                         d.y = mean(data[[response]]) * 1.3) {
-  rlang::check_installed(c("ggplot2", "boot"), reason = "for this function.")
-  data[[group]] <- as.factor(data[[group]])
+  rlang::check_installed(c("ggplot2"), reason = "for this function.")
+  if (isTRUE(boot)) {
+    rlang::check_installed(c("boot"), reason = "for this feature.")
+  }
+
+  var_message <- "' variable does not seem to exist in this data set... Typo?"
+
+  if (!response %in% names(data)) stop(paste0("The '", response, var_message))
+
+  if (missing(group)) {
+    group <- "All data"
+    data[[group]] <- group
+  } else {
+    if (!group %in% names(data)) stop(paste0("The '", group, var_message))
+    data[[group]] <- as.factor(data[[group]])
+  }
+
   data[[response]] <- as.numeric(data[[response]])
   dataSummary <- rcompanion_groupwiseMean(
     group = group,
@@ -227,7 +242,8 @@ nice_violin <- function(data,
     digits = 5,
     R = bootstraps,
     traditional = !boot,
-    bca = boot
+    bca = boot,
+    na.rm = TRUE
   )
   if (has.d == TRUE & any(
     !missing(comp1), !missing(comp2),
@@ -269,7 +285,9 @@ nice_violin <- function(data,
     } +
     ggplot2::ylab(ytitle) +
     ggplot2::xlab(xtitle) +
-    ggplot2::geom_violin(color = border.colour, alpha = alpha, size = border.size) +
+    ggplot2::geom_violin(color = border.colour,
+                         alpha = alpha,
+                         linewidth = border.size) +
     ggplot2::geom_point(ggplot2::aes(y = .data$Mean),
       color = "black",
       size = 4,
@@ -281,7 +299,7 @@ nice_violin <- function(data,
       ymax = dataSummary[, 6]
     ),
     color = "black",
-    size = 1,
+    linewidth = 1,
     width = CIcap.width,
     data = dataSummary
     )
