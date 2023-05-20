@@ -382,12 +382,12 @@ yet, you will need to install it via the following command:
 between-group design):</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice_randomize</span>()</span></code></pre></div>
 <pre><code>##   id Condition
-## 1  1         b
-## 2  2         a
+## 1  1         a
+## 2  2         b
 ## 3  3         c
-## 4  4         c
-## 5  5         a
-## 6  6         b
+## 4  4         a
+## 5  5         b
+## 6  6         c
 ## 7  7         c
 ## 8  8         a
 ## 9  9         b</code></pre>
@@ -398,14 +398,14 @@ names of conditions:</p>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">n =</span> <span class="dv">8</span>, </span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">condition.names =</span> <span class="fu">c</span>(<span class="st">&quot;BP&quot;</span>,<span class="st">&quot;CX&quot;</span>,<span class="st">&quot;PZ&quot;</span>,<span class="st">&quot;ZL&quot;</span>))</span></code></pre></div>
 <pre><code>##   id Condition
-## 1  1        PZ
-## 2  2        BP
-## 3  3        ZL
-## 4  4        CX
-## 5  5        CX
-## 6  6        ZL
-## 7  7        PZ
-## 8  8        BP</code></pre>
+## 1  1        BP
+## 2  2        ZL
+## 3  3        CX
+## 4  4        PZ
+## 5  5        ZL
+## 6  6        CX
+## 7  7        BP
+## 8  8        PZ</code></pre>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Warning: sample size needs to be a multiple of your </span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># number of groups if using &quot;between&quot;!</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># FYI: condition names stand for popular antidepressants:</span></span>
@@ -424,14 +424,14 @@ but with within-subject design specified</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nice_randomize</span>(<span class="at">design =</span> <span class="st">&quot;within&quot;</span>)</span></code></pre></div>
 <pre><code>##   id Condition
 ## 1  1 a - c - b
-## 2  2 a - b - c
-## 3  3 b - c - a
-## 4  4 b - c - a
+## 2  2 c - b - a
+## 3  3 b - a - c
+## 4  4 a - c - b
 ## 5  5 b - a - c
-## 6  6 c - b - a
-## 7  7 c - b - a
-## 8  8 b - a - c
-## 9  9 a - c - b</code></pre>
+## 6  6 b - a - c
+## 7  7 b - a - c
+## 8  8 c - a - b
+## 9  9 c - a - b</code></pre>
 <p>Specify design, number of conditions, number of participants, and
 names of conditions:</p>
 <p>Note that you could call your conditions anything (like a, b, c,
@@ -441,12 +441,12 @@ etc.).</p>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">n =</span> <span class="dv">6</span>, </span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">condition.names =</span> <span class="fu">c</span>(<span class="st">&quot;SV&quot;</span>,<span class="st">&quot;AV&quot;</span>,<span class="st">&quot;ST&quot;</span>,<span class="st">&quot;AT&quot;</span>))</span></code></pre></div>
 <pre><code>##   id         Condition
-## 1  1 ST - SV - AT - AV
-## 2  2 ST - AT - SV - AV
-## 3  3 ST - AV - AT - SV
-## 4  4 AT - SV - ST - AV
-## 5  5 SV - AT - AV - ST
-## 6  6 ST - AT - SV - AV</code></pre>
+## 1  1 ST - SV - AV - AT
+## 2  2 SV - ST - AT - AV
+## 3  3 SV - AT - ST - AV
+## 4  4 ST - AV - SV - AT
+## 5  5 AV - SV - AT - ST
+## 6  6 ST - AT - AV - SV</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># FYI: condition names stand for forms of multisensory stimulation:</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># SV = Synchronous Visual, AV = Asynchronous Visual, </span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ST = Synchronous Tactile, AT = Asynchronous Tactile.</span></span></code></pre></div>
@@ -466,12 +466,12 @@ argument:</p>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Tester&quot;</span>, <span class="st">&quot;Notes&quot;</span>))</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nice_randomized_subjects)</span></code></pre></div>
 <pre><code>##   id         Condition Date/Time SONA ID Age/Gd. Handedness Tester Notes
-## 1  1 AV - AT - ST - SV        NA      NA      NA         NA     NA    NA
-## 2  2 SV - AV - AT - ST        NA      NA      NA         NA     NA    NA
-## 3  3 AT - ST - SV - AV        NA      NA      NA         NA     NA    NA
-## 4  4 AV - AT - SV - ST        NA      NA      NA         NA     NA    NA
-## 5  5 SV - ST - AT - AV        NA      NA      NA         NA     NA    NA
-## 6  6 SV - AV - AT - ST        NA      NA      NA         NA     NA    NA</code></pre>
+## 1  1 SV - AT - ST - AV        NA      NA      NA         NA     NA    NA
+## 2  2 ST - AV - AT - SV        NA      NA      NA         NA     NA    NA
+## 3  3 SV - AV - AT - ST        NA      NA      NA         NA     NA    NA
+## 4  4 AT - ST - SV - AV        NA      NA      NA         NA     NA    NA
+## 5  5 SV - AV - ST - AT        NA      NA      NA         NA     NA    NA
+## 6  6 AT - SV - AV - ST        NA      NA      NA         NA     NA    NA</code></pre>
 <div id="save-data-frame-to-word" class="section level3">
 <h3>Save data frame to Word</h3>
 <ol style="list-style-type: decimal">

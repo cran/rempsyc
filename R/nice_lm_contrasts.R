@@ -18,6 +18,9 @@
 #' The effect size and confidence interval are calculated via
 #' [bootES::bootES].
 #'
+#' For the *easystats* equivalent, see:
+#' [modelbased::estimate_contrasts()].
+#'
 #' @param model The model to be formatted.
 #' @param group The group for the comparison.
 #' @param data The data frame.
@@ -54,6 +57,7 @@ nice_lm_contrasts <- function(model,
                               effect.type = "cohens.d",
                               bootstraps = 2000,
                               ...) {
+  check_col_names(data, group)
   rlang::check_installed(c("bootES", "emmeans"), reason = "for this function.")
   if (inherits(model, "list")) {
     models.list <- model

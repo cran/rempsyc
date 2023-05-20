@@ -1,6 +1,6 @@
 #' @title Nice formatting of simple slopes for lm models
 #'
-#' @description Extracts simple slopes from `lm` model
+#' @description Extracts simple slopes from [lm()] model
 #' object and format for a publication-ready format.
 #'
 #' @inherit nice_lm details
@@ -10,13 +10,24 @@
 #' @param moderator The moderating variable.
 #' @param b.label What to rename the default "b" column (e.g.,
 #' to capital B if using standardized data for it to be converted
-#' to the Greek beta symbol in the `nice_table` function).
+#' to the Greek beta symbol in the [nice_table()] function). Now
+#' attempts to automatically detect whether the variables were
+#' standardized, and if so, sets `b.label = "B"` automatically.
+#' Factor variables or dummy variables (only two numeric values)
+#' are ignored when checking for standardization.
+#' *This argument is now deprecated, please use argument
+#' `standardize` directly instead.*
+#' @param standardize Logical, whether to standardize the
+#' data before refitting the model. If `TRUE`, automatically sets
+#' `b.label = "B"`. Defaults to `FALSE`. Note that if you have factor
+#' variables, these will be pseudo-betas, so these coefficients could
+#' be interpreted more like Cohen's *d*.
 #' @param mod.id Logical. Whether to display the model number,
 #' when there is more than one model.
 #' @param ci.alternative Alternative for the confidence interval
 #' of the sr2. It can be either "two.sided (the default in this
 #' package), "greater", or "less".
-#' @param ... Further arguments to be passed to the `lm`
+#' @param ... Further arguments to be passed to the [lm()]
 #' function for the models.
 #'
 #' @keywords moderation interaction regression
@@ -33,7 +44,11 @@
 #' # Make and format multiple models
 #' model2 <- lm(qsec ~ gear * wt, mtcars)
 #' my.models <- list(model, model2)
-#' nice_lm_slopes(my.models, predictor = "gear", moderator = "wt")
+#' x <- nice_lm_slopes(my.models, predictor = "gear", moderator = "wt")
+#' x
+#' @examplesIf requireNamespace("effectsize", quietly = TRUE) & packageVersion("effectsize") >= "0.8.3.5"
+#' # Get interpretations
+#' cbind(x, Interpretation = effectsize::interpret_omega_squared(x$sr2))
 #'
 #' @seealso
 #' Checking for moderation before checking simple slopes:
@@ -46,14 +61,40 @@ nice_lm_slopes <- function(model,
                            predictor,
                            moderator,
                            b.label = "b",
+                           standardize = FALSE,
                            mod.id = TRUE,
                            ci.alternative = "two.sided",
                            ...) {
   rlang::check_installed("effectsize", reason = "for this function.")
-  if (inherits(model, "list")) {
+  if (inherits(model, "list") && all(unlist(lapply(model, inherits, "lm")))) {
     models.list <- model
-  } else {
+  } else if (inherits(model, "lm")) {
     models.list <- list(model)
+  } else {
+    stop("Model must be of class 'lm' or be a 'list()' of lm models (using 'c()' won't work).")
+  }
+
+  lapply(models.list, function(x) {
+    check_col_names(x$model, c(predictor, moderator))
+    })
+
+  if (!missing(b.label)) {
+    message(paste("The argument 'b.label' is deprecated.",
+                  "If your data is standardized, capital B will be used automatically.",
+                  "Else, please use argument 'standardize' directly instead."))
+  }
+
+  if (model_is_standardized(models.list)) {
+    b.label <- "B"
+  } else if (isTRUE(standardize)) {
+    data.list <- lapply(models.list, function(x) {
+      scale(x$model)
+    })
+    models.list <- lapply(seq_along(models.list), function(i) {
+      data <- as.data.frame(data.list[i])
+      stats::update(models.list[[i]], data = data)
+    })
+    b.label <- "B"
   }
 
   data.list <- lapply(models.list, function(x) {
@@ -119,11 +160,8 @@ nice_lm_slopes <- function(model,
   table.stats <- dplyr::rename(table.stats,
                                `Predictor (+/-1 SD)` = .data$Predictor)
 
-  if (!missing(b.label)) {
-    names(table.stats)[names(
-      table.stats
-    ) == "b"] <- b.label
-  }
+  names(table.stats)[names(table.stats) == "b"] <- b.label
+
   if (length(models.list) > 1 & mod.id == TRUE) {
     model.number <- rep(seq_along(models.list), each = 3)
     table.stats <- stats::setNames(cbind(model.number, table.stats),

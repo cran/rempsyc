@@ -80,7 +80,6 @@ library(report)
 (stats.table <- as.data.frame(report(model)))
 nice_table(stats.table, report = "t.test")
 
-
 ## -----------------------------------------------------------------------------
 nice_table(stats.table, report = "t.test", short = TRUE)
 

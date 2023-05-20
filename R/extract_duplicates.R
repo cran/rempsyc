@@ -7,6 +7,8 @@
 #' values for that row, to help in the decision-making when
 #' selecting which duplicates to keep.
 #'
+#' @details For the *easystats* equivalent, see:
+#' [datawizard::data_unique()].
 #' @param data The data frame.
 #' @param id The ID variable for which to check for duplicates.
 #' @keywords duplicates
@@ -30,6 +32,7 @@
 #' @importFrom dplyr mutate %>%
 
 extract_duplicates <- function(data, id) {
+  check_col_names(data, id)
 
   Row <- seq_len(nrow(data))
   data <- cbind(Row, data)

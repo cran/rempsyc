@@ -1,5 +1,4 @@
 #' @noRd
-
 theme_apa <- function(x) {
   #if (require(ggplot2)) {
     #rlang::check_installed("ggplot2", reason = "for this function.")
@@ -23,3 +22,36 @@ message_white <- function(...) {
   message("\033[97m", ..., "\033[97m")
 }
 
+#' @noRd
+check_col_names <- function(data, names) {
+  missing.cols <- lapply(names, function(x) {
+    x %in% names(data)
+    # grep(x, names(data), invert = F)
+  })
+  if(length(missing.cols) > 0) {
+    id <- which(!unlist(missing.cols))
+    if (isTRUE(length(id) >= 1)) {
+      missing.cols <- toString(names[id])
+      stop(paste0("Variables not found: ", missing.cols, ". Please double check spelling."))
+    }
+  }
+}
+
+#' @noRd
+data_is_standardized <- function(data) {
+  data <- dplyr::select(data, -dplyr::where(is.factor), -dplyr::where(function(x) {
+    length(unique(x)) == 2
+    }))
+  all(lapply(data, function(x) {
+    y <- x %>% attributes %>% names
+    all(any(grepl("center", y)), any(grepl("scale", y)))
+  }) %>% unlist())
+}
+
+#' @noRd
+model_is_standardized <- function(models.list) {
+  all(
+    lapply(models.list, function(submodel) {
+      data_is_standardized(submodel$model)
+    }) %>% unlist())
+}

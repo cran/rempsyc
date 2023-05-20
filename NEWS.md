@@ -1,3 +1,42 @@
+# rempsyc 0.1.2
+* CRAN resubmission
+* Readd leading zero for beta
+
+## rempsyc 0.1.1.9
+* `nice_table`: 
+  * Now capitalize fit indices for a better integration with package {lavaanExtra}.
+  * Simplification of internal coding and column formatting, e.g., columns names close equivalents, such as `"pvalue"` and `"p.value"`, are now automatically converted to `"p"` (similar for others such as `"chisq"` to `"chi2"`, `conf.low` and `CI_low` to `CI_lower`, etc.), for proper formatting.
+
+## rempsyc 0.1.1.8
+* `nice_table`: It was requested that the leading zero be omitted for beta values (since it rarely goes beyond 1), so that is now the case (although note that in some edge cases it can go beyond 1, but that may indicate other problems with the model, such as high multicollinearity).
+
+## rempsyc 0.1.1.7
+* `format_r`: will now convert NA values to "" instead of "NA"; this is useful when using the `col.format.r` argument in `nice_table` for correlation matrices.
+* `nice_table`: CFI, TLI, RMSEA, and SRMR now omit the leading zero as they usually cannot be greater than one.
+
+## rempsyc 0.1.1.6
+* Fix bug when checking column names (all functions).
+* Fix bug in `nice_violin` to accept NULL group argument again (similar to problem corrected in version 0.1.1.4). Also changed the order of argument, with `response` second, and `group` third, since group becomes optional (as consistent with other similar functions).
+* Fix a bug in `citation("rempsyc")`.
+
+## rempsyc 0.1.1.5
+* `nice_lm` and `nice_lm_slopes`: better error messages if the wrong object type is provided.
+
+## rempsyc 0.1.1.4
+* Fix a newly introduced bug whereas `nice_normality`, `nice_density`, and `nice_qq` would not work without a group argument.
+
+## rempsyc 0.1.1.3
+* `nice_table` and `format_p`: Now support the logical `stars` argument to add significance stars (defaults to `TRUE` for `nice_table` but `FALSE` for `format_p`).
+
+## rempsyc 0.1.1.2
+* `nice_table`: It was pointed out that, in order to align with APA rules regarding tables, the first column should not be centered, but left-aligned. This has been corrected.
+* `nice_lm` and `nice_lm_slopes`: Now attempt to automatically detect whether the variables were standardized, and if so, sets `b.label = "B"` automatically.
+* `nice_lm`, `nice_lm_slopes`, `nice_mod` and `nice_slopes`: argument `b.label` becomes deprecated in favour of the new `standardize` argument, which defaults to `FALSE` for the first two (as this is most likely the desired result) and `TRUE` for the last two (because models are probably already specified as desired, so we do not want to refit them unless required).
+
+## rempsyc 0.1.1.1
+* Now produces clearer error messages when specifying columns that don't exist, across all functions.
+* `sr2` function is now removed.
+
 # rempsyc 0.1.1
 * CRAN resubmission!
 

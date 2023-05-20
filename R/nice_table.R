@@ -13,6 +13,7 @@
 #' results? Requires a column named "p" containing p-values.
 #' Can either accept logical (TRUE/FALSE) OR a numeric value for
 #' a custom critical p-value threshold (e.g., 0.10 or 0.001).
+#' @param stars Logical. Whether to add asterisks for significant p values.
 #' @param col.format.p Applies p-value formatting to columns
 #' that cannot be named "p" (for example for a data frame full
 #' of p-values, also because it is not possible to have more
@@ -136,6 +137,7 @@
 #' @export
 nice_table <- function(data,
                        highlight = FALSE,
+                       stars = TRUE,
                        italics,
                        col.format.p,
                        col.format.r,
@@ -154,6 +156,35 @@ nice_table <- function(data,
 
   dataframe <- data
 
+  format_p_internal <- ifelse(isTRUE(stars), "format_p_stars", "format_p")
+
+  #   _______________________________________
+  #   Replace possible alternative names ####
+  dataframe <- dataframe %>%
+    rename_with(
+      ~ case_when(
+        . == "p.value" ~ "p",
+        . == "pvalue" ~ "p",
+        . == "chisq" ~ "chi2",
+        . == "conf.low" ~ "CI_lower",
+        . == "conf.high" ~ "CI_upper",
+        . == "CI_low" ~ "CI_lower",
+        . == "CI_high" ~ "CI_upper",
+        . == "df_error" ~ "df",
+        . == "Cohens_d" ~ "d",
+        . == "Coefficient" ~ "b",
+        . == "Std_Coefficient" ~ "B",
+        . == "r_rank_biserial" ~ "rrb",
+        . == "Eta2" ~ "n2",
+        . == "Eta2_partial" ~ "np2",
+        . == "mu" ~ "Mu",
+        . == "term" ~ "Term",
+        . == "method" ~ "Method",
+        . == "alternative" ~ "Alternative",
+        TRUE ~ .
+      )
+    )
+
   #   __________________________________
   #   Broom integration            ####
 
@@ -167,7 +198,7 @@ nice_table <- function(data,
   #   _________________________________
   #   Formatting                   ####
 
-  if(!missing(separate.header)) {
+  if (!missing(separate.header)) {
     filtered.names <- grep("[.]", names(dataframe), value = TRUE)
     sh.pattern <- lapply(filtered.names, function(x) {
       gsub("[^\\.]*$", "", x)
@@ -193,14 +224,16 @@ nice_table <- function(data,
   #   Column formatting              ####
 
   table <- format_columns(dataframe, table, italics, separate.header,
-                          highlight, sh.pattern, unique.pattern)
+                          highlight, sh.pattern, unique.pattern,
+                          format_p_internal)
 
   #   _____________________________________________
   #   Extra features                           ####
 
   table <- beautify_flextable(
     dataframe, table, separate.header, col.format.p, col.format.r,
-    format.custom, col.format.custom, sh.pattern, unique.pattern)
+    format.custom, col.format.custom, sh.pattern, unique.pattern,
+    format_p_internal)
 
   #   ___________________________
   #   Final touch up (title) ####
@@ -268,15 +301,9 @@ prepare_broom <- function(dataframe, broom)  {
     dataframe <- dataframe %>%
       rename_with(
         ~ case_when(
-          . == "p.value" ~ "p",
-          . == "conf.low" ~ "CI_lower",
-          . == "conf.high" ~ "CI_upper",
           . == "statistic" ~ "t",
           . == "std.error" ~ "SE",
           . == "parameter" ~ "df",
-          . == "term" ~ "Term",
-          . == "method" ~ "Method",
-          . == "alternative" ~ "Alternative",
           TRUE ~ .
         )
       )
@@ -346,27 +373,9 @@ prepare_report <- function(dataframe, report, short)  {
       }
     }
     dataframe <- dataframe %>%
-      rename_with(
-        ~ case_when(
-          . == "CI_low" ~ "CI_lower",
-          . == "CI_high" ~ "CI_upper",
-          . == "df_error" ~ "df",
-          TRUE ~ .
-        )
-      ) %>%
-      relocate(any_of(c("Method", "Alternative"))) %>%
+      relocate(any_of(c("method", "alternative"))) %>%
       select(-any_of("CI"))
     if (report == "t.test") {
-      dataframe <- dataframe %>%
-        rename_with(
-          ~ case_when(
-            . == "Cohens_d_CI_low" ~ "d_CI_low",
-            . == "Cohens_d_CI_high" ~ "d_CI_high",
-            . == "Cohens_d" ~ "d",
-            . == "mu" ~ "Mu",
-            TRUE ~ .
-          )
-        )
       dataframe <- dataframe %>%
         format_CI(col.name = "95% CI (t)") %>%
         relocate(`95% CI (t)`, .after = t)
@@ -378,19 +387,12 @@ prepare_report <- function(dataframe, report, short)  {
       if (short == TRUE) {
         dataframe <- dataframe %>%
           select_if(!names(.) %in% c(
-            "Method", "Alternative", "Mean_Group1",
+            "method", "alternative", "Mean_Group1",
             "Mean_Group2", "Difference", "95% CI (t)"
           ))
       }
     } else if (report == "lm") {
       dataframe <- dataframe %>%
-        rename_with(
-          ~ case_when(
-            . == "Coefficient" ~ "b",
-            . == "Std_Coefficient" ~ "B",
-            TRUE ~ .
-          )
-        ) %>%
         relocate(Fit, .after = Parameter)
       dataframe <- dataframe %>%
         format_CI(col.name = "95% CI (b)") %>%
@@ -406,14 +408,6 @@ prepare_report <- function(dataframe, report, short)  {
           which(is.na(dataframe$Parameter)):nrow(dataframe)), ]
       }
     } else if (report == "aov") {
-      dataframe <- dataframe %>%
-        rename_with(
-          ~ case_when(
-            . == "Eta2" ~ "n2",
-            . == "Eta2_partial" ~ "np2",
-            TRUE ~ .
-          )
-        )
       if ("Eta2_CI_low" %in% names(dataframe)) {
         dataframe <- dataframe %>%
           format_CI(c("Eta2_CI_low", "Eta2_CI_high"),
@@ -428,13 +422,6 @@ prepare_report <- function(dataframe, report, short)  {
       }
     } else if (report == "wilcox") {
       dataframe <- dataframe %>%
-        rename_with(
-          ~ case_when(
-            . == "r_rank_biserial" ~ "rrb",
-            TRUE ~ .
-          )
-        )
-      dataframe <- dataframe %>%
         format_CI(c("rank_biserial_CI_low", "rank_biserial_CI_high"),
                   col.name = "95% CI (rrb)"
         )
@@ -446,6 +433,7 @@ prepare_report <- function(dataframe, report, short)  {
 # prepare_flextable
 prepare_flextable <- function(dataframe, separate.header, col.format.ci,
                               highlight, sh.pattern, unique.pattern) {
+
   if (!missing(col.format.ci)) {
     if(!methods::is(col.format.ci, "list")) {
       col.format.ci <- list(col.format.ci)
@@ -460,8 +448,15 @@ prepare_flextable <- function(dataframe, separate.header, col.format.ci,
             select(last_col()) %>% names)
     }
   }
-  if ("CI_lower" %in% names(dataframe) & "CI_upper" %in% names(dataframe)) {
+  if ("CI_lower" %in% names(dataframe) && "CI_upper" %in% names(dataframe)) {
     dataframe <- format_CI(dataframe)
+  }
+  if ("rmsea.ci.lower" %in% names(dataframe) && "rmsea.ci.upper" %in% names(dataframe)) {
+    dataframe <- format_CI(dataframe, c(
+      "rmsea.ci.lower", "rmsea.ci.upper"), "90% CI (RMSEA)")
+    if ("rmsea" %in% names(dataframe)) {
+      relocate(dataframe, "90% CI (RMSEA)", .after = "rmsea")
+    }
   }
   if(!missing(separate.header)) {
     CI_lower.sh <- paste0(sh.pattern, rep(
@@ -487,6 +482,7 @@ prepare_flextable <- function(dataframe, separate.header, col.format.ci,
     mutate(across(contains("95% CI"), ~ ifelse(
       .x == "[ NA,  NA]", "", .x
     )))
+
   if ("p" %in% names(dataframe) && isTRUE(highlight) ||
       is.numeric(highlight)) {
     highlight <- ifelse(isTRUE(highlight), .05, highlight)
@@ -507,6 +503,12 @@ prepare_flextable <- function(dataframe, separate.header, col.format.ci,
     dataframe <- dataframe %>%
       select(-all_of("Model Number"))
   }
+  # Capitals
+  cols.capitals <- c("cfi", "tli", "nnfi", "rfi", "nfi", "pnfi", "ifi",
+                     "rni", "logl", "aic", "bic", "bic2", "rmsea", "rmr",
+                     "srmr", "crmr", "gfi", "agfi", "pgfi", "mfi", "ecvi")
+  dataframe <- dataframe %>%
+    rename_with(.fn = toupper, .cols = any_of(cols.capitals))
   dataframe
 }
 
@@ -539,6 +541,7 @@ create_flextable <- function(dataframe, highlight, width, note,
     flextable::hline_top(part = "body", border = nice.borders) %>%
     flextable::hline_bottom(part = "body", border = nice.borders) %>%
     flextable::align(align = "center", part = "all") %>%
+    flextable::align(j = 1, align = "left", part = "body") %>%
     flextable::valign(valign = "center", part = "all") %>%
     flextable::line_spacing(space = 2, part = "all") %>%
     flextable::fix_border_issues()
@@ -577,7 +580,8 @@ create_flextable <- function(dataframe, highlight, width, note,
 }
 
 format_columns <- function(dataframe, table, italics, separate.header,
-                           highlight, sh.pattern, unique.pattern) {
+                           highlight, sh.pattern, unique.pattern,
+                           format_p_internal) {
   ##  ....................................
   ##  Special cases                  ####
   # Fix header with italics
@@ -643,8 +647,8 @@ format_columns <- function(dataframe, table, italics, separate.header,
   ##  .....................................
   ##  Formatting functions            ####
   compose.table0 <- data.frame(
-    col = c("r", "p"),
-    fun = c("format_r", "format_p")
+    col = c("p", "r"),
+    fun = c(format_p_internal, "format_r")
   )
 
   if(!missing(separate.header)) {
@@ -673,9 +677,9 @@ format_columns <- function(dataframe, table, italics, separate.header,
   compose.table1 <- data.frame(
     col = c(
       "95% CI (b)", "95% CI (B)", "95% CI (t)", "95% CI (d)",
-      "95% CI (np2)", "95% CI (n2)", "95% CI (rrb)", "B", "np2",
+      "95% CI (np2)", "95% CI (n2)", "95% CI (rrb)", "np2",
       "n2", "ges", "dR", "Predictor (+/-1 SD)", "M1 - M2", "tau",
-      "rho", "rrb", "chi2", "chi2.df"
+      "rho", "rrb", "chi2", "chi2.df", "B"
     ),
     value = c(
       '"95% CI (", flextable::as_i("b"), ")"',
@@ -685,7 +689,6 @@ format_columns <- function(dataframe, table, italics, separate.header,
       '"95% CI (", "\u03b7", flextable::as_sub("p"), flextable::as_sup("2"), ")"',
       '"95% CI (", "\u03b7", flextable::as_sup("2"), ")"',
       '"95% CI (", flextable::as_i("r"), flextable::as_i(flextable::as_sub("rb")), ")"',
-      '"\u03B2"',
       '"\u03b7", flextable::as_sub("p"), flextable::as_sup("2")',
       '"\u03b7", flextable::as_sup("2")',
       '"\u03b7", flextable::as_sub("G"), flextable::as_sup("2")',
@@ -696,7 +699,8 @@ format_columns <- function(dataframe, table, italics, separate.header,
       '"\u03C1"',
       'flextable::as_i("r"), flextable::as_i(flextable::as_sub("rb"))',
       '"\u03C7", flextable::as_sup("2")',
-      '"\u03C7", flextable::as_sup("2"), "\u2215", flextable::as_i("df")'
+      '"\u03C7", flextable::as_sup("2"), "\u2215", flextable::as_i("df")',
+      '"\u03B2"' # This is beta
     )
   )
   for (i in seq(nrow(compose.table1))) {
@@ -708,10 +712,12 @@ format_columns <- function(dataframe, table, italics, separate.header,
         )
     }
   }
+  # Values that can't be greater than 1, but not just italic formatting like r
   compose.table2 <- data.frame(
-    col = c("R2", "sr2"),
+    col = c("R2", "sr2", "CFI", "TLI", "RMSEA", "SRMR"),
     value = c('flextable::as_i("R"), flextable::as_sup("2")',
-              'flextable::as_i("sr"), flextable::as_sup("2")')
+              'flextable::as_i("sr"), flextable::as_sup("2")',
+              "CFI", "TLI", "RMSEA", "SRMR")
   )
 
   if(!missing(separate.header)) {
@@ -755,10 +761,12 @@ format_columns <- function(dataframe, table, italics, separate.header,
 
 beautify_flextable <- function(
     dataframe, table, separate.header, col.format.p, col.format.r,
-    format.custom, col.format.custom, sh.pattern, unique.pattern) {
+    format.custom, col.format.custom, sh.pattern, unique.pattern,
+    format_p_internal) {
 
   dont.change0 <- c("p", "r", "t", "SE", "SD", "F", "df", "b",
-                    "M", "N", "n", "Z", "z", "W", "R2", "sr2")
+                    "M", "N", "n", "Z", "z", "W", "R2", "sr2",
+                    "CFI", "TLI", "RMSEA", "SRMR", "B")
   dont.change <- paste0("^", dont.change0, "$", collapse = "|")
 
   if(!missing(separate.header)) {
@@ -780,7 +788,7 @@ beautify_flextable <- function(
     table <- table %>%
       parse_formatter(
         column = table$col_keys[col.format.p],
-        fun = "format_p"
+        fun = format_p_internal
       )
   }
   if (!missing(col.format.r)) {

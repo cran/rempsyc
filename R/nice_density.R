@@ -20,10 +20,10 @@
 #' @param histogram Logical, whether to add an histogram
 #' @param breaks.auto If histogram = TRUE, then option to set bins/breaks
 #'                    automatically, mimicking the default behaviour of base
-#'                    R `hist()` (the Sturges method). Defaults to `FALSE`.
-#' @param bins If histogram = TRUE, then option to change the default bin (30).
+#'                    R [hist()] (the Sturges method). Defaults to `FALSE`.
+#' @param bins If `histogram = TRUE`, then option to change the default bin (30).
 #' @keywords density normality
-#' @return A density plot of class ggplot, by group (if provided), along a
+#' @return A density plot of class `ggplot`, by group (if provided), along a
 #'         reference line representing a matched normal distribution.
 #' @examples
 #' # Make the basic plot
@@ -52,7 +52,7 @@
 #'   histogram = TRUE
 #' )
 #'
-#' @importFrom dplyr mutate %>% select group_by summarize rowwise do
+#' @importFrom dplyr mutate %>% select group_by summarize rowwise do reframe
 #' @importFrom stats reformulate dnorm
 #'
 #' @seealso
@@ -66,7 +66,7 @@
 #' @export
 nice_density <- function(data,
                          variable,
-                         group,
+                         group = NULL,
                          colours,
                          ytitle = "Density",
                          xtitle = variable,
@@ -77,8 +77,9 @@ nice_density <- function(data,
                          histogram = FALSE,
                          breaks.auto = FALSE,
                          bins = 30) {
+  check_col_names(data, c(group, variable))
   rlang::check_installed("ggplot2", reason = "for this function.")
-  if (missing(group)) {
+  if (is.null(group)) {
     group <- "All"
     data[[group]] <- group
   }
@@ -91,7 +92,7 @@ nice_density <- function(data,
   # Make data for normally distributed lines
   dat_norm <- data %>%
     group_by(.data[[group]]) %>%
-    do(summarize(.,
+    do(reframe(.,
       x = seq(min(.[[variable]], na.rm = TRUE),
         max(.[[variable]], na.rm = TRUE),
         length.out = 100
@@ -127,8 +128,8 @@ nice_density <- function(data,
   }
 
   # Make plot
-  plot <- ggplot2::ggplot(data, ggplot2::aes_string(x = variable,
-                                                    fill = group)) +
+  plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]],
+                                             fill = .data[[group]])) +
     {
       if (isTRUE(histogram)) {
         ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(
@@ -137,18 +138,19 @@ nice_density <- function(data,
         )
       }
     } +
-    ggplot2::geom_density(alpha = 0.6, size = 1, colour = "gray25") +
+    ggplot2::geom_density(alpha = 0.6, linewidth = 1, colour = "gray25") +
     ggplot2::theme_bw(base_size = 24) +
     ggplot2::ggtitle(title) +
     ggplot2::facet_grid(gform) +
     ggplot2::geom_line(
       data = dat_norm, ggplot2::aes(x = x, y = y),
-      color = "darkslateblue", size = 1.2, alpha = 0.9
+      color = "darkslateblue", linewidth = 1.2, alpha = 0.9
     ) +
     ggplot2::ylab(ytitle) +
     ggplot2::xlab(xtitle) +
     {
       if (shapiro == TRUE) {
+        rlang::check_installed("ggrepel", reason = "for this function.")
         ggrepel::geom_text_repel(
           data = dat_text,
           mapping = ggplot2::aes(
@@ -173,7 +175,7 @@ nice_density <- function(data,
       if (grid == TRUE) {
         ggplot2::theme(
           panel.grid.major = ggplot2::element_line(),
-          panel.grid.minor = ggplot2::element_line(size = 0.5)
+          panel.grid.minor = ggplot2::element_line(linewidth = 0.5)
         )
       }
     }

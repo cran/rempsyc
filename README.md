@@ -6,16 +6,15 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/rempsyc/rempsyc/workflows/R-CMD-check/badge.svg)](https://github.com/rempsyc/rempsyc/actions)
-[![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/ui/#package:rempsyc)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rempsyc)](https://cran.r-project.org/package=rempsyc)
+[![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/ui/#package:rempsyc)
 [![Last-commit](https://img.shields.io/github/last-commit/rempsyc/rempsyc)](https://github.com/rempsyc/rempsyc/commits/main)
-[![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![downloads](https://cranlogs.r-pkg.org/badges/rempsyc)](https://shinyus.ipub.com/cranview/)
 [![total](https://cranlogs.r-pkg.org/badges/grand-total/rempsyc)](https://shinyus.ipub.com/cranview/)
 [![sponsors](https://img.shields.io/github/sponsors/rempsyc)](https://github.com/sponsors/rempsyc)
 [![followers](https://img.shields.io/github/followers/rempsyc?style=social)](https://github.com/rempsyc?tab=followers)
-[![forks](https://img.shields.io/github/forks/rempsyc/rempsyc?style=social)](https://github.com/rempsyc/rempsyc/network/members)
 [![stars](https://img.shields.io/github/stars/rempsyc/rempsyc?style=social)](https://github.com/rempsyc/rempsyc/stargazers)
 <!-- badges: end -->
 
@@ -119,13 +118,15 @@ t.tests
 #> 2  2.2295592
 #> 3 -1.1245498
 #> 4  2.7329218
+```
 
+``` r
 # Format t-test results
 t_table <- nice_table(t.tests)
 t_table
 ```
 
-<img src="man/figures/README-nice_t_test-1.png" width="60%" />
+<img src="man/figures/README-nice_t_test-1.png" />
 
 ``` r
 # Save to word
@@ -144,10 +145,11 @@ moment). In this particular case, the confidence intervals are
 bootstraped around the Cohen’s d.
 
 ``` r
-nice_contrasts(data = mtcars,
-               response = c("mpg", "disp"),
-               group = "cyl",
-               covariates = "hp") -> contrasts
+contrasts <- nice_contrasts(
+  data = mtcars,
+  response = c("mpg", "disp"),
+  group = "cyl",
+  covariates = "hp")
 contrasts
 #>   Dependent Variable Comparison df         t              p         d
 #> 1                mpg      4 - 8 28  3.663188 0.001028617005  3.587739
@@ -157,18 +159,20 @@ contrasts
 #> 5               disp      6 - 8 28 -4.861413 0.000040511099 -3.288726
 #> 6               disp      4 - 6 28 -2.703423 0.011534398020 -1.514296
 #>     CI_lower   CI_upper
-#> 1  2.7170373  4.5024428
-#> 2  0.8511956  2.0106199
-#> 3  1.3490153  3.0829491
-#> 4 -5.7651045 -3.7947737
-#> 5 -4.2630965 -2.1604816
-#> 6 -2.2324787 -0.9219754
+#> 1  2.7233152  4.5444020
+#> 2  0.7636356  1.9983921
+#> 3  1.3463241  3.0909832
+#> 4 -5.8742386 -3.8249073
+#> 5 -4.3364754 -2.2536315
+#> 6 -2.2348783 -0.8642249
+```
 
+``` r
 # Format contrasts results
 nice_table(contrasts, highlight = .001)
 ```
 
-<img src="man/figures/README-nice_contrasts-1.png" width="70%" />
+<img src="man/figures/README-nice_contrasts-1.png" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/contrasts>
 
@@ -185,26 +189,28 @@ moderations <- nice_mod(
   predictor = "gear",
   moderator = "wt")
 moderations
-#>   Model Number Dependent Variable Predictor df          b          t          p
-#> 1            1                mpg      gear 28   5.615951  1.9437108 0.06204275
-#> 2            1                mpg        wt 28   1.403861  0.4301493 0.67037970
-#> 3            1                mpg   gear:wt 28  -1.966931 -2.1551077 0.03989970
-#> 4            2               disp      gear 28  35.797623  0.6121820 0.54535707
-#> 5            2               disp        wt 28 160.930043  2.4364098 0.02144867
-#> 6            2               disp   gear:wt 28 -15.037022 -0.8140664 0.42247646
-#>           sr2     CI_lower   CI_upper
-#> 1 0.028488305 0.0000000000 0.08418650
-#> 2 0.001395217 0.0000000000 0.01331121
-#> 3 0.035022025 0.0003502202 0.09723370
-#> 4 0.002737218 0.0000000000 0.01919662
-#> 5 0.043355972 0.0004335597 0.11228977
-#> 6 0.004840251 0.0000000000 0.02679265
+#>   Model Number Dependent Variable Predictor df           B          t
+#> 1            1                mpg      gear 28 -0.08718042 -0.7982999
+#> 2            1                mpg        wt 28 -0.94959988 -8.6037724
+#> 3            1                mpg   gear:wt 28 -0.23559962 -2.1551077
+#> 4            2               disp      gear 28 -0.07488985 -0.6967831
+#> 5            2               disp        wt 28  0.83273987  7.6662883
+#> 6            2               disp   gear:wt 28 -0.08758665 -0.8140664
+#>                   p         sr2     CI_lower   CI_upper
+#> 1 0.431415645312886 0.004805465 0.0000000000 0.02702141
+#> 2 0.000000002383144 0.558188818 0.3142326391 0.80214500
+#> 3 0.039899695159515 0.035022025 0.0003502202 0.09723370
+#> 4 0.491683361920263 0.003546038 0.0000000000 0.02230154
+#> 5 0.000000023731710 0.429258143 0.1916386492 0.66687764
+#> 6 0.422476456495512 0.004840251 0.0000000000 0.02679265
+```
 
+``` r
 # Format moderation results
 nice_table(moderations, highlight = TRUE)
 ```
 
-<img src="man/figures/README-nice_mod-1.png" width="70%" />
+<img src="man/figures/README-nice_mod-1.png" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -215,35 +221,36 @@ the model in the traditional way and feed it to `nice_lm` instead.
 Supports multiple `lm` models as well.
 
 ``` r
-
 model1 <- lm(mpg ~ cyl + wt * hp, mtcars)
 model2 <- lm(qsec ~ disp + drat * carb, mtcars)
-mods <- nice_lm(list(model1, model2))
+mods <- nice_lm(list(model1, model2), standardize = TRUE)
 mods
-#>   Model Number Dependent Variable Predictor df            b          t
-#> 1            1                mpg       cyl 27 -0.365239089 -0.7180977
-#> 2            1                mpg        wt 27 -7.627489287 -5.0146028
-#> 3            1                mpg        hp 27 -0.108394273 -3.6404181
-#> 4            1                mpg     wt:hp 27  0.025836594  3.2329593
-#> 5            2               qsec      disp 27 -0.006222635 -1.9746464
-#> 6            2               qsec      drat 27  0.227692395  0.1968842
-#> 7            2               qsec      carb 27  1.154106215  0.7179431
-#> 8            2               qsec drat:carb 27 -0.477539959 -1.0825727
-#>               p          sr2     CI_lower   CI_upper
-#> 1 0.47886516037 0.0021596150 0.0000000000 0.01306786
-#> 2 0.00002928375 0.1053130854 0.0089876445 0.20163853
-#> 3 0.00113640283 0.0555024045 0.0005550240 0.11934768
-#> 4 0.00322175341 0.0437733438 0.0004377334 0.09898662
-#> 5 0.05861684483 0.0702566891 0.0000000000 0.19796621
-#> 6 0.84539274511 0.0006984424 0.0000000000 0.01347203
-#> 7 0.47895897531 0.0092872897 0.0000000000 0.05587351
-#> 8 0.28857203297 0.0211165564 0.0000000000 0.09136014
+#>   Model Number Dependent Variable Predictor df          B          t
+#> 1            1                mpg       cyl 27 -0.1082286 -0.7180977
+#> 2            1                mpg        wt 27 -0.6230206 -5.7013627
+#> 3            1                mpg        hp 27 -0.2874898 -2.4045781
+#> 4            1                mpg     wt:hp 27  0.2875867  3.2329593
+#> 5            2               qsec      disp 27 -0.4315891 -1.9746464
+#> 6            2               qsec      drat 27 -0.3337401 -1.5296603
+#> 7            2               qsec      carb 27 -0.5092480 -3.3234897
+#> 8            2               qsec drat:carb 27 -0.2307906 -1.0825727
+#>                p         sr2     CI_lower   CI_upper
+#> 1 0.478865160370 0.002159615 0.0000000000 0.01306786
+#> 2 0.000004663587 0.136134000 0.0218243033 0.25044370
+#> 3 0.023318649649 0.024215142 0.0002421514 0.06327779
+#> 4 0.003221753406 0.043773344 0.0004377334 0.09898662
+#> 5 0.058616844828 0.070256689 0.0000000000 0.19796621
+#> 6 0.137733654712 0.042159840 0.0000000000 0.14133523
+#> 7 0.002563609014 0.199020425 0.0019902043 0.40691582
+#> 8 0.288572032972 0.021116556 0.0000000000 0.09136014
+```
 
+``` r
 # Format moderation results
 nice_table(mods, highlight = TRUE)
 ```
 
-<img src="man/figures/README-nice_lm-1.png" width="70%" />
+<img src="man/figures/README-nice_lm-1.png" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -260,26 +267,28 @@ simple.slopes <- nice_slopes(
   predictor = "gear",
   moderator = "wt")
 simple.slopes
-#>   Model Number Dependent Variable Predictor (+/-1 SD) df         b         t
-#> 1            1                mpg       gear (LOW-wt) 28  7.540509 2.0106560
-#> 2            1                mpg      gear (MEAN-wt) 28  5.615951 1.9437108
-#> 3            1                mpg      gear (HIGH-wt) 28  3.691393 1.7955678
-#> 4            2               disp       gear (LOW-wt) 28 50.510710 0.6654856
-#> 5            2               disp      gear (MEAN-wt) 28 35.797623 0.6121820
-#> 6            2               disp      gear (HIGH-wt) 28 21.084536 0.5067498
-#>            p         sr2 CI_lower   CI_upper
-#> 1 0.05408136 0.030484485        0 0.08823243
-#> 2 0.06204275 0.028488305        0 0.08418650
-#> 3 0.08336403 0.024311231        0 0.07551496
-#> 4 0.51118526 0.003234637        0 0.02113980
-#> 5 0.54535707 0.002737218        0 0.01919662
-#> 6 0.61629796 0.001875579        0 0.01548357
+#>   Model Number Dependent Variable Predictor (+/-1 SD) df           B          t
+#> 1            1                mpg       gear (LOW-wt) 28  0.14841920  1.0767040
+#> 2            1                mpg      gear (MEAN-wt) 28 -0.08718042 -0.7982999
+#> 3            1                mpg      gear (HIGH-wt) 28 -0.32278004 -1.9035367
+#> 4            2               disp       gear (LOW-wt) 28  0.01269680  0.0935897
+#> 5            2               disp      gear (MEAN-wt) 28 -0.07488985 -0.6967831
+#> 6            2               disp      gear (HIGH-wt) 28 -0.16247650 -0.9735823
+#>            p           sr2 CI_lower    CI_upper
+#> 1 0.29080233 0.00874170174        0 0.038860523
+#> 2 0.43141565 0.00480546484        0 0.027021406
+#> 3 0.06729622 0.02732283901        0 0.081796622
+#> 4 0.92610159 0.00006397412        0 0.002570652
+#> 5 0.49168336 0.00354603816        0 0.022301536
+#> 6 0.33860037 0.00692298820        0 0.033253212
+```
 
+``` r
 # Format simple slopes results
 nice_table(simple.slopes)
 ```
 
-<img src="man/figures/README-nice_slopes-1.png" width="80%" />
+<img src="man/figures/README-nice_slopes-1.png" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -295,28 +304,30 @@ can change).
 model1 <- lm(mpg ~ gear * wt, mtcars)
 model2 <- lm(disp ~ gear * wt, mtcars)
 my.models <- list(model1, model2)
-simple.slopes <- nice_lm_slopes(my.models, predictor = "gear", moderator = "wt")
+simple.slopes <- nice_lm_slopes(my.models, predictor = "gear", moderator = "wt", standardize = TRUE)
 simple.slopes
-#>   Model Number Dependent Variable Predictor (+/-1 SD) df         b         t
-#> 1            1                mpg       gear (LOW-wt) 28  7.540509 2.0106560
-#> 2            1                mpg      gear (MEAN-wt) 28  5.615951 1.9437108
-#> 3            1                mpg      gear (HIGH-wt) 28  3.691393 1.7955678
-#> 4            2               disp       gear (LOW-wt) 28 50.510710 0.6654856
-#> 5            2               disp      gear (MEAN-wt) 28 35.797623 0.6121820
-#> 6            2               disp      gear (HIGH-wt) 28 21.084536 0.5067498
-#>            p         sr2 CI_lower   CI_upper
-#> 1 0.05408136 0.030484485        0 0.08823243
-#> 2 0.06204275 0.028488305        0 0.08418650
-#> 3 0.08336403 0.024311231        0 0.07551496
-#> 4 0.51118526 0.003234637        0 0.02113980
-#> 5 0.54535707 0.002737218        0 0.01919662
-#> 6 0.61629796 0.001875579        0 0.01548357
+#>   Model Number Dependent Variable Predictor (+/-1 SD) df           B          t
+#> 1            1                mpg       gear (LOW-wt) 28  0.14841920  1.0767040
+#> 2            1                mpg      gear (MEAN-wt) 28 -0.08718042 -0.7982999
+#> 3            1                mpg      gear (HIGH-wt) 28 -0.32278004 -1.9035367
+#> 4            2               disp       gear (LOW-wt) 28  0.01269680  0.0935897
+#> 5            2               disp      gear (MEAN-wt) 28 -0.07488985 -0.6967831
+#> 6            2               disp      gear (HIGH-wt) 28 -0.16247650 -0.9735823
+#>            p           sr2 CI_lower    CI_upper
+#> 1 0.29080233 0.00874170174        0 0.038860523
+#> 2 0.43141565 0.00480546484        0 0.027021406
+#> 3 0.06729622 0.02732283901        0 0.081796622
+#> 4 0.92610159 0.00006397412        0 0.002570652
+#> 5 0.49168336 0.00354603816        0 0.022301536
+#> 6 0.33860037 0.00692298820        0 0.033253212
+```
 
+``` r
 # Format simple slopes results
 nice_table(simple.slopes)
 ```
 
-<img src="man/figures/README-nice_lm_slopes-1.png" width="80%" />
+<img src="man/figures/README-nice_lm_slopes-1.png" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/moderation>
 
@@ -411,7 +422,10 @@ blue); 0.2-0.4: medium (orange/blue); 0.4-1.0: large (red/dark blue)).
 
 ``` r
 
-cormatrix_excel(infert, "cormatrix1")
+cormatrix_excel(data = infert, 
+                filename = "cormatrix1", 
+                select = c("age", "parity", "induced", "case", "spontaneous", 
+                           "stratum", "pooled.stratum"))
 #> # Correlation Matrix (pearson-method)
 #> 
 #> Parameter      |      age |   parity |  induced |     case | spontaneous |  stratum | pooled.stratum
@@ -517,8 +531,8 @@ best_duplicate(df1, id = "id")
 
 ## `scale_mad`
 
-Scale and center (“standardize”) data based on the median absolute
-deviation.
+Scale and center (“standardize”) data based on the median and median
+absolute deviation (MAD).
 
 ``` r
 scale_mad(mtcars$mpg)
@@ -532,64 +546,19 @@ scale_mad(mtcars$mpg)
 
 ## `find_mad`
 
-Identify outliers based on (e.g.,) 3 median absolute deviations (MAD).
+Identify outliers based on (e.g.,) 3 median absolute deviations (MAD)
+from the median.
 
 ``` r
-find_mad(data = mtcars, col.list = names(mtcars), criteria = 3)
-#> 20 outlier(s) based on 3 median absolute deviations for variable(s): 
-#>  mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb 
-#> 
-#> The following participants were considered outliers for more than one variable: 
-#> 
-#>   Row n
-#> 1   3 2
-#> 2   9 2
-#> 3  18 2
-#> 4  19 2
-#> 5  20 2
-#> 6  26 2
-#> 7  28 2
-#> 8  31 2
-#> 9  32 2
+find_mad(data = mtcars, col.list = names(mtcars)[c(1:7, 10:11)], criteria = 3)
+#> 2 outlier(s) based on 3 median absolute deviations for variable(s): 
+#>  mpg, cyl, disp, hp, drat, wt, qsec, gear, carb 
 #> 
 #> Outliers per variable: 
 #> 
 #> $qsec
 #>   Row qsec_mad
 #> 1   9 3.665557
-#> 
-#> $vs
-#>    Row vs_mad
-#> 1    3    Inf
-#> 2    4    Inf
-#> 3    6    Inf
-#> 4    8    Inf
-#> 5    9    Inf
-#> 6   10    Inf
-#> 7   11    Inf
-#> 8   18    Inf
-#> 9   19    Inf
-#> 10  20    Inf
-#> 11  21    Inf
-#> 12  26    Inf
-#> 13  28    Inf
-#> 14  32    Inf
-#> 
-#> $am
-#>    Row am_mad
-#> 1    1    Inf
-#> 2    2    Inf
-#> 3    3    Inf
-#> 4   18    Inf
-#> 5   19    Inf
-#> 6   20    Inf
-#> 7   26    Inf
-#> 8   27    Inf
-#> 9   28    Inf
-#> 10  29    Inf
-#> 11  30    Inf
-#> 12  31    Inf
-#> 13  32    Inf
 #> 
 #> $carb
 #>   Row carb_mad
@@ -638,7 +607,7 @@ format_p(0.0041231)
 format_p(t.tests$p)
 #> [1] ".001"   "< .001" "< .001" "< .001"
 format_r(moderations$sr2)
-#> [1] ".03" ".00" ".04" ".00" ".04" ".00"
+#> [1] ".00" ".56" ".04" ".00" ".43" ".00"
 format_d(t.tests$d)
 #> [1] "-1.48" "1.45"  "-2.00" "1.89"
 ```

@@ -5,11 +5,13 @@
 #'
 #' @details Using `boot = TRUE` uses bootstrapping (for the
 #' confidence intervals only) with the BCa method, using
-#' the `rcompanion_groupwiseMean` function.
+#' the [rcompanion_groupwiseMean] function.
+#'
+#' For the *easystats* equivalent, see: [see::geom_violindot()].
 #'
 #' @param data The data frame.
-#' @param group The group by which to plot the variable.
 #' @param response The dependent variable to be plotted.
+#' @param group The group by which to plot the variable.
 #' @param boot Logical, whether to use bootstrapping for the confidence
 #' interval or not.
 #' @param bootstraps How many bootstraps to use.
@@ -64,7 +66,6 @@
 #' # Make the basic plot
 #' nice_violin(
 #'   data = ToothGrowth,
-#'   group = "dose",
 #'   response = "len"
 #' )
 #' \donttest{
@@ -189,8 +190,8 @@
 #' @importFrom rlang .data UQ
 
 nice_violin <- function(data,
-                        group,
                         response,
+                        group = NULL,
                         boot = FALSE,
                         bootstraps = 2000,
                         colours,
@@ -216,20 +217,16 @@ nice_violin <- function(data,
                         has.d = FALSE,
                         d.x = mean(c(comp1, comp2)) * 1.1,
                         d.y = mean(data[[response]]) * 1.3) {
+  check_col_names(data, c(group, response))
   rlang::check_installed(c("ggplot2"), reason = "for this function.")
   if (isTRUE(boot)) {
     rlang::check_installed(c("boot"), reason = "for this feature.")
   }
 
-  var_message <- "' variable does not seem to exist in this data set... Typo?"
-
-  if (!response %in% names(data)) stop(paste0("The '", response, var_message))
-
-  if (missing(group)) {
-    group <- "All data"
+  if (is.null(group)) {
+    group <- "All"
     data[[group]] <- group
   } else {
-    if (!group %in% names(data)) stop(paste0("The '", group, var_message))
     data[[group]] <- as.factor(data[[group]])
   }
 

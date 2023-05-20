@@ -2,7 +2,7 @@
 % Please edit documentation in R/cormatrix_excel.R
 \name{cormatrix_excel}
 \alias{cormatrix_excel}
-\title{Easy export of correlation matrix to Excel (improved version)}
+\title{Easy export of correlation matrix to Excel}
 \usage{
 cormatrix_excel(
   data,
@@ -22,13 +22,13 @@ but no need to specify extension).}
 \item{overwrite}{Whether to allow overwriting previous file.}
 
 \item{p_adjust}{Default p-value adjustment method (default is "none",
-although \code{correlation::correlation}'s default is "holm")}
+although \code{\link[correlation:correlation]{correlation::correlation()}}'s default is "holm")}
 
 \item{print.mat}{Logical, whether to also print the correlation matrix
 to console.}
 
 \item{...}{Parameters to be passed to the \code{correlation} package
-(see \code{?correlation::correlation})}
+(see \code{\link[correlation:correlation]{correlation::correlation()}})}
 }
 \value{
 A Microsoft Excel document, containing the colour-coded
@@ -48,15 +48,14 @@ Based on the \code{correlation} and \code{openxlsx2} packages.
 \examples{
 \dontshow{.old_wd <- setwd(tempdir())}
 # Basic example
-cormatrix_excel(mtcars, "cormatrix1")
-cormatrix_excel(iris, p_adjust = "none", "cormatrix2")
-cormatrix_excel(airquality, method = "spearman", "cormatrix3")
+cormatrix_excel(mtcars, select = c("mpg", "cyl", "disp", "hp", "carb"), filename = "cormatrix1")
+cormatrix_excel(iris, p_adjust = "none", filename = "cormatrix2")
+cormatrix_excel(airquality, method = "spearman", filename = "cormatrix3")
 \dontshow{setwd(.old_wd)}
 }
 \author{
 Adapted from @JanMarvin (JanMarvin/openxlsx2#286) and
-the original \code{rempsyc::cormatrix_excel} (now internal function
-\code{cormatrix_excel_deprecated})
+the original \code{rempsyc::cormatrix_excel}.
 }
 \keyword{Excel}
 \keyword{correlation}

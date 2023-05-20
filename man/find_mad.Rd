@@ -25,16 +25,19 @@ A list of dataframes of outliers per variable, with row
 numbers, based on the MAD. When printed, provides the number
 of outliers, selected variables, and any outlier flagged for
 more than one variable. More information can be obtainned
-by using the \code{attributes()} function around the generated object.
+by using the \code{\link[=attributes]{attributes()}} function around the generated object.
 }
 \description{
-Identify outliers based on 3 median absolute deviations (MAD).
+Identify outliers based on 3 median absolute deviations (MAD)
+from the median.
+}
+\details{
+The function internally use \code{\link[=scale_mad]{scale_mad()}} to "standardize" the data
+based on the MAD and median, and then check for any observation greater
+than the specified criteria (e.g., +/-3).
 
-See: Leys, C., Ley, C., Klein, O., Bernard, P., & Licata, L. (2013).
-Detecting outliers: Do not use standard deviation around the mean,
-use absolute deviation around the median. \emph{Journal of Experimental
-Social Psychology}, \emph{49}(4), 764–766.
-https://doi.org/10.1016/j.jesp.2013.03.013
+For the \emph{easystats} equivalent, use:
+\verb{performance::check_outliers(x, method = "zscore_robust, threshold = 3)}.
 }
 \examples{
 find_mad(
@@ -51,6 +54,13 @@ find_mad(
   ID = "car",
   criteria = 3
 )
+}
+\references{
+Leys, C., Ley, C., Klein, O., Bernard, P., & Licata, L.
+(2013). Detecting outliers: Do not use standard deviation
+around the mean, use absolute deviation around the median.
+\emph{Journal of Experimental Social Psychology}, \emph{49}(4), 764–766.
+https://doi.org/10.1016/j.jesp.2013.03.013
 }
 \keyword{MAD}
 \keyword{mean}

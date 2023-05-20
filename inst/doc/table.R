@@ -52,6 +52,9 @@ nice_table(stats.table, highlight = TRUE)
 nice_table(stats.table, highlight = .01)
 
 ## -----------------------------------------------------------------------------
+nice_table(stats.table, stars = FALSE)
+
+## -----------------------------------------------------------------------------
 library(broom)
 model <- lm(mpg ~ cyl + wt * hp, mtcars)
 (stats.table <- tidy(model, conf.int = TRUE))
@@ -191,12 +194,12 @@ T1 <- rbind(T1.mpg, T1.disp)
 T2 <- rbind(T2.mpg, T2.disp)
 wide.data <- cbind(T1, T2[-(1)])
 nice_table(wide.data)
-nice_table(wide.data, separate.header = TRUE)
+nice_table(wide.data, separate.header = TRUE, stars = FALSE)
 
 ## -----------------------------------------------------------------------------
 names(wide.data)[-1] <- paste0(rep(c("Early.", "Late."), each = 6), 
                                names(wide.data)[-1])
 nice_table(wide.data)
-nice_table(wide.data, separate.header = TRUE)
+nice_table(wide.data, separate.header = TRUE, stars = FALSE)
 
 

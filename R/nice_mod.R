@@ -13,13 +13,22 @@
 #' @param covariates The desired covariates in the model.
 #' @param b.label What to rename the default "b" column (e.g.,
 #' to capital B if using standardized data for it to be converted
-#' to the Greek beta symbol in the `nice_table` function).
+#' to the Greek beta symbol in the [nice_table()] function). Now
+#' attempts to automatically detect whether the variables were
+#' standardized, and if so, sets `b.label = "B"` automatically.
+#' Factor variables or dummy variables (only two numeric values)
+#' are ignored when checking for standardization.
+#' *This argument is now deprecated, please use argument
+#' `standardize` directly instead.*
+#' @param standardize Logical, whether to standardize the
+#' data before fitting the model. If `TRUE`, automatically sets
+#' `b.label = "B"`. Defaults to `TRUE`.
 #' @param mod.id Logical. Whether to display the model number,
 #' when there is more than one model.
 #' @param ci.alternative Alternative for the confidence interval
 #' of the sr2. It can be either "two.sided (the default in this
 #' package), "greater", or "less".
-#' @param ... Further arguments to be passed to the `lm`
+#' @param ... Further arguments to be passed to the [lm()]
 #' function for the models.
 #'
 #' @keywords moderation interaction regression
@@ -51,13 +60,17 @@
 #' )
 #'
 #' # Three-way interaction
-#' nice_mod(
+#' x <- nice_mod(
 #'   data = mtcars,
 #'   response = "mpg",
 #'   predictor = "gear",
 #'   moderator = "wt",
 #'   moderator2 = "am"
 #' )
+#' x
+#' @examplesIf requireNamespace("effectsize", quietly = TRUE) & packageVersion("effectsize") >= "0.8.3.5"
+#' # Get interpretations
+#' cbind(x, Interpretation = effectsize::interpret_omega_squared(x$sr2))
 #'
 #' @seealso
 #' Checking simple slopes after testing for moderation:
@@ -73,10 +86,26 @@ nice_mod <- function(data,
                      moderator2 = NULL,
                      covariates = NULL,
                      b.label = "b",
+                     standardize = TRUE,
                      mod.id = TRUE,
                      ci.alternative = "two.sided",
                      ...) {
+  check_col_names(data, c(predictor, response, moderator, moderator2, covariates))
   rlang::check_installed("effectsize", reason = "for this function.")
+
+  if (!missing(b.label)) {
+    message(paste("The argument 'b.label' is deprecated.",
+                  "If your data is standardized, capital B will be used automatically.",
+                  "Else, please use argument 'standardize' directly instead."))
+  }
+
+  if (data_is_standardized(data)) {
+    b.label <- "B"
+  } else if (isTRUE(standardize)) {
+    data <- lapply(data, scale)
+    b.label <- "B"
+  }
+
   if (!missing(covariates)) {
     covariates.term <- paste("+", covariates, collapse = " ")
   } else {
@@ -102,10 +131,7 @@ nice_mod <- function(data,
     table.stats <- stats::setNames(cbind(model.number, table.stats),
                             c("Model Number", names(table.stats)))
   }
-  if (!missing(b.label)) {
-    names(table.stats)[names(
-      table.stats
-    ) == "b"] <- b.label
-  }
+  names(table.stats)[names(table.stats) == "b"] <- b.label
+
   table.stats
 }

@@ -12,6 +12,7 @@ nice_mod(
   moderator2 = NULL,
   covariates = NULL,
   b.label = "b",
+  standardize = TRUE,
   mod.id = TRUE,
   ci.alternative = "two.sided",
   ...
@@ -32,7 +33,17 @@ nice_mod(
 
 \item{b.label}{What to rename the default "b" column (e.g.,
 to capital B if using standardized data for it to be converted
-to the Greek beta symbol in the \code{nice_table} function).}
+to the Greek beta symbol in the \code{\link[=nice_table]{nice_table()}} function). Now
+attempts to automatically detect whether the variables were
+standardized, and if so, sets \code{b.label = "B"} automatically.
+Factor variables or dummy variables (only two numeric values)
+are ignored when checking for standardization.
+\emph{This argument is now deprecated, please use argument
+\code{standardize} directly instead.}}
+
+\item{standardize}{Logical, whether to standardize the
+data before fitting the model. If \code{TRUE}, automatically sets
+\code{b.label = "B"}. Defaults to \code{TRUE}.}
 
 \item{mod.id}{Logical. Whether to display the model number,
 when there is more than one model.}
@@ -41,7 +52,7 @@ when there is more than one model.}
 of the sr2. It can be either "two.sided (the default in this
 package), "greater", or "less".}
 
-\item{...}{Further arguments to be passed to the \code{lm}
+\item{...}{Further arguments to be passed to the \code{\link[=lm]{lm()}}
 function for the models.}
 }
 \value{
@@ -60,6 +71,11 @@ Please read the documentation for that function, especially regarding
 the interpretation of the confidence interval. In \code{rempsyc}, instead
 of using the default one-sided alternative ("greater"), we use the
 two-sided alternative.
+
+To interpret the sr2, use \code{\link[effectsize:interpret_omega_squared]{effectsize::interpret_omega_squared()}}.
+
+For the \emph{easystats} equivalent, use \code{\link[report:report]{report::report()}} on the \code{\link[=lm]{lm()}}
+model object.
 }
 \examples{
 # Make the basic table
@@ -88,14 +104,18 @@ nice_mod(
 )
 
 # Three-way interaction
-nice_mod(
+x <- nice_mod(
   data = mtcars,
   response = "mpg",
   predictor = "gear",
   moderator = "wt",
   moderator2 = "am"
 )
-
+x
+\dontshow{if (requireNamespace("effectsize", quietly = TRUE) & packageVersion("effectsize") >= "0.8.3.5") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Get interpretations
+cbind(x, Interpretation = effectsize::interpret_omega_squared(x$sr2))
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Checking simple slopes after testing for moderation:

@@ -14,7 +14,16 @@ A numeric vector of standardized data.
 }
 \description{
 Scale and center ("standardize") data based on
-the median absolute deviation.
+the median absolute deviation (MAD).
+}
+\details{
+The function subtracts the median to each observation, and then
+divides the outcome by the MAD. This is analogous to regular standardization
+which subtracts the mean to each observaion, and then divides the outcome
+by the standard deviation.
+
+For the \emph{easystats} equivalent, use:
+\code{datawizard::standardize(x, robust = TRUE)}.
 }
 \examples{
 scale_mad(mtcars$mpg)

@@ -1,7 +1,7 @@
 #' @title Get group means and CIs (rcompanion::groupwiseMean)
 #'
 #' @description Get group means and bootstrapped effect sizes
-#' from the `rcompanion` package and `groupwiseMean` function.
+#' from the `rcompanion::groupwiseMean` function.
 #' The function had to be taken separately from the package as
 #' the dependency is failing upon install of the current package.
 #'
@@ -104,7 +104,7 @@
 #' )
 #' }
 #'
-#' @importFrom dplyr syms cur_data group_by summarize rename all_of across
+#' @importFrom dplyr syms pick group_by summarize rename all_of across everything
 
 rcompanion_groupwiseMean <- function(formula = NULL,
                                      data = NULL,
@@ -125,7 +125,7 @@ rcompanion_groupwiseMean <- function(formula = NULL,
   ddply <- function(.data, .variables, var, .fun, ...) {
     .data %>%
       group_by(across(all_of(.variables))) %>%
-      summarize(V1 = .fun(as.data.frame(cur_data()), var), .groups = "drop") %>%
+      summarize(V1 = .fun(as.data.frame(pick(everything())), var), .groups = "drop") %>%
       as.data.frame()
   }
 

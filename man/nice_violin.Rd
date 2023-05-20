@@ -6,8 +6,8 @@
 \usage{
 nice_violin(
   data,
-  group,
   response,
+  group = NULL,
   boot = FALSE,
   bootstraps = 2000,
   colours,
@@ -38,9 +38,9 @@ nice_violin(
 \arguments{
 \item{data}{The data frame.}
 
-\item{group}{The group by which to plot the variable.}
-
 \item{response}{The dependent variable to be plotted.}
+
+\item{group}{The group by which to plot the variable.}
 
 \item{boot}{Logical, whether to use bootstrapping for the confidence
 interval or not.}
@@ -123,13 +123,14 @@ bootstrapped) confidence intervals.
 \details{
 Using \code{boot = TRUE} uses bootstrapping (for the
 confidence intervals only) with the BCa method, using
-the \code{rcompanion_groupwiseMean} function.
+the \link{rcompanion_groupwiseMean} function.
+
+For the \emph{easystats} equivalent, see: \code{\link[see:geom_violindot]{see::geom_violindot()}}.
 }
 \examples{
 # Make the basic plot
 nice_violin(
   data = ToothGrowth,
-  group = "dose",
   response = "len"
 )
 \donttest{

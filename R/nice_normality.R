@@ -21,8 +21,8 @@
 #'                    automatically, mimicking the default behaviour of
 #'                    base R `hist()` (the Sturges method). Defaults to
 #'                    `FALSE`.
-#' @param ... Further arguments from `nice_qq()` and
-#' `nice_density()` to be passed to `nice_normality()`
+#' @param ... Further arguments from [nice_qq()] and
+#' [nice_density()] to be passed to [nice_normality()]
 #'
 #' @return A plot of classes patchwork and ggplot, containing two plots,
 #'         resulting from \code{\link{nice_density}} and \code{\link{nice_qq}}.
@@ -65,7 +65,7 @@
 
 nice_normality <- function(data,
                            variable,
-                           group,
+                           group = NULL,
                            colours,
                            groups.labels,
                            grid = TRUE,
@@ -74,8 +74,10 @@ nice_normality <- function(data,
                            histogram = FALSE,
                            breaks.auto = FALSE,
                            ...) {
+  check_col_names(data, c(group, variable))
   rlang::check_installed(c("ggplot2", "see", "patchwork"),
                          reason = "for this function.")
+
   plot.a <- nice_density(
     data = data, variable = variable, group = group,
     colours = colours, groups.labels = groups.labels,
