@@ -43,7 +43,7 @@
 #' of freedom, regression coefficient, t-value, p-value, and the effect
 #' size, the semi-partial correlation squared, and its confidence interval.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("effectsize", quietly = TRUE)
 #' # Make and format model
 #' model <- lm(mpg ~ cyl + wt * hp, mtcars)
 #' nice_lm(model)
@@ -53,7 +53,7 @@
 #' my.models <- list(model, model2)
 #' x <- nice_lm(my.models)
 #' x
-#' @examplesIf requireNamespace("effectsize", quietly = TRUE) & packageVersion("effectsize") >= "0.8.3.5"
+#' @examplesIf requireNamespace("effectsize", quietly = TRUE) && packageVersion("effectsize") >= "0.8.3.5"
 #' # Get interpretations
 #' cbind(x, Interpretation = effectsize::interpret_r2_semipartial(x$sr2))
 #'
@@ -70,7 +70,9 @@ nice_lm <- function(model,
                     mod.id = TRUE,
                     ci.alternative = "two.sided",
                     ...) {
-  rlang::check_installed("effectsize", reason = "for this function.")
+  rlang::check_installed("effectsize",
+                         version = "0.8.2",
+                         reason = "for this function.")
   if (inherits(model, "list") && all(unlist(lapply(model, inherits, "lm")))) {
     models.list <- model
   } else if (inherits(model, "lm")) {
@@ -80,9 +82,11 @@ nice_lm <- function(model,
   }
 
   if (!missing(b.label)) {
-    message(paste("The argument 'b.label' is deprecated.",
-                  "If your data is standardized, capital B will be used automatically.",
-                  "Else, please use argument 'standardize' directly instead."))
+    message(paste(
+      "The argument 'b.label' is deprecated.",
+      "If your data is standardized, capital B will be used automatically.",
+      "Else, please use argument 'standardize' directly instead."
+    ))
   }
 
   if (model_is_standardized(models.list)) {

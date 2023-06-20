@@ -1,5 +1,8 @@
-test_that("regular", {
-  skip_if_not_installed(c("ggplot2", "boot", "ggsignif"))
+test_that("basic", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("boot")
+  skip_if_not_installed("ggsignif")
+  skip_if_not_installed("ggrepel")
 
   nice_density(
     data = iris,
@@ -21,8 +24,8 @@ test_that("regular", {
 
   # Save a high-resolution image file to specified directory
   ggplot2::ggsave("niceviolinplothere.tiff",
-                  width = 7, height = 7, unit = "in",
-                  dpi = 300, path = NULL
+    width = 7, height = 7, unit = "in",
+    dpi = 300, path = NULL
   ) # change for your own desired path
 
   # Remove file
@@ -130,5 +133,4 @@ test_that("regular", {
     alpha = 1,
     border.colour = "black"
   )
-
 })

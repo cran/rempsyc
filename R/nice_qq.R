@@ -20,7 +20,7 @@
 #'         reference interpretation helper, the 95% confidence band.
 #' @keywords QQ plots normality distribution
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("ggrepel", quietly = TRUE) && requireNamespace("qqplotr", quietly = TRUE)
 #' # Make the basic plot
 #' nice_qq(
 #'   data = iris,
@@ -59,7 +59,9 @@ nice_qq <- function(data,
                     shapiro = FALSE,
                     title = variable) {
   check_col_names(data, c(group, variable))
-  rlang::check_installed(c("ggplot2", "qqplotr"), reason = "for this function.")
+  rlang::check_installed(c("ggplot2", "qqplotr"),
+                         reason = "for this function.",
+                         version = c("3.4.0", "0.0.6"),)
 
   if (is.null(group)) {
     group <- "All"
@@ -84,7 +86,8 @@ nice_qq <- function(data,
   }
   # Make plot
   plot <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(
-    fill = .data[[group]], sample = .data[[variable]])) +
+    fill = .data[[group]], sample = .data[[variable]]
+  )) +
     qqplotr::stat_qq_band() +
     qqplotr::stat_qq_line() +
     qqplotr::stat_qq_point() +
@@ -112,14 +115,13 @@ nice_qq <- function(data,
         ggplot2::scale_fill_manual(values = colours)
       }
     }
-    plot <- theme_apa(plot) +
-    {
-      if (grid == TRUE) {
-        ggplot2::theme(
-          panel.grid.major = ggplot2::element_line(),
-          panel.grid.minor = ggplot2::element_line(size = 0.5)
-        )
-      }
+  plot <- theme_apa(plot) + {
+    if (grid == TRUE) {
+      ggplot2::theme(
+        panel.grid.major = ggplot2::element_line(),
+        panel.grid.minor = ggplot2::element_line(size = 0.5)
+      )
     }
+  }
   plot
 }

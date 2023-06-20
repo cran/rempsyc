@@ -13,6 +13,8 @@
 #' or the other, not both.
 #' @param alpha The desired level of transparency.
 #' @param has.line Whether to plot the regression line(s).
+#' @param method Which method to use for the regression line,
+#' either `"lm"` (default) or `"loess"`.
 #' @param has.confband Logical. Whether to display the
 #' confidence band around the slope.
 #' @param has.fullrange Logical. Whether to extend the slope
@@ -31,7 +33,11 @@
 #' @param legend.title The desired legend title.
 #' @param group The group by which to plot the variable
 #' @param colours Desired colours for the plot, if desired.
-#' @param groups.order Specifies the desired display order of the groups.
+#' @param groups.order Specifies the desired display order of the groups
+#' on the legend. Either provide the levels directly, or a string: "increasing"
+#' or "decreasing", to order based on the average value of the variable on the
+#' y axis, or "string.length", to order from the shortest to the longest
+#' string (useful when working with long string names). "Defaults to "none".
 #' @param groups.labels Changes groups names (labels).
 #' Note: This applies after changing order of level.
 #' @param groups.alpha The manually specified transparency
@@ -47,7 +53,7 @@
 #' @keywords scatter plots
 #' @return A scatter plot of class ggplot.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' # Make the basic plot
 #' nice_scatter(
 #'   data = mtcars,
@@ -70,12 +76,13 @@
 #'   xtitle = "Weight (1000 lbs)"
 #' )
 #'
-#' # Have points "jittered"
+#' # Have points "jittered", loess method
 #' nice_scatter(
 #'   data = mtcars,
 #'   predictor = "wt",
 #'   response = "mpg",
-#'   has.jitter = TRUE
+#'   has.jitter = TRUE,
+#'   method = "loess"
 #' )
 #'
 #' # Change the transparency of the points
@@ -172,22 +179,12 @@
 #'   has.line = FALSE
 #' )
 #'
-#' # Add a legend
-#' nice_scatter(
-#'   data = mtcars,
-#'   predictor = "wt",
-#'   response = "mpg",
-#'   group = "cyl",
-#'   has.legend = TRUE
-#' )
-#'
 #' # Change order of labels on the legend
 #' nice_scatter(
 #'   data = mtcars,
 #'   predictor = "wt",
 #'   response = "mpg",
 #'   group = "cyl",
-#'   has.legend = TRUE,
 #'   groups.order = c(8, 4, 6)
 #' )
 #'
@@ -197,7 +194,6 @@
 #'   predictor = "wt",
 #'   response = "mpg",
 #'   group = "cyl",
-#'   has.legend = TRUE,
 #'   groups.labels = c("Weak", "Average", "Powerful")
 #' )
 #' # Warning: This applies after changing order of level
@@ -208,7 +204,6 @@
 #'   predictor = "wt",
 #'   response = "mpg",
 #'   group = "cyl",
-#'   has.legend = TRUE,
 #'   legend.title = "cylinders"
 #' )
 #'
@@ -256,6 +251,7 @@ nice_scatter <- function(data,
                          has.jitter = FALSE,
                          alpha = 0.7,
                          has.line = TRUE,
+                         method = "lm",
                          has.confband = FALSE,
                          has.fullrange = FALSE,
                          has.linetype = FALSE,
@@ -270,7 +266,7 @@ nice_scatter <- function(data,
                          legend.title = "",
                          group = NULL,
                          colours = "#619CFF",
-                         groups.order = NULL,
+                         groups.order = "none",
                          groups.labels = NULL,
                          groups.alpha = NULL,
                          has.r = FALSE,
@@ -280,7 +276,9 @@ nice_scatter <- function(data,
                          p.x = Inf,
                          p.y = -Inf) {
   check_col_names(data, c(predictor, response))
-  rlang::check_installed("ggplot2", reason = "for this function.")
+  rlang::check_installed("ggplot2",
+                         reason = "for this function.",
+                         version = "3.4.0")
   has.groups <- !missing(group)
   if (has.r == TRUE) {
     r <- format_r(cor.test(data[[predictor]],
@@ -298,29 +296,47 @@ nice_scatter <- function(data,
   }
   if (missing(group)) {
     smooth <- ggplot2::stat_smooth(
-      formula = y ~ x, geom = "line", method = "lm",
-      fullrange = has.fullrange, color = colours, size = 1
+      formula = y ~ x, geom = "line", method = method,
+      fullrange = has.fullrange, color = colours, linewidth = 1
     )
-  }
-  if (!missing(group)) {
+  } else {
     data[[group]] <- as.factor(data[[group]])
     smooth <- ggplot2::stat_smooth(
-      formula = y ~ x, geom = "line", method = "lm",
-      fullrange = has.fullrange, size = 1
+      formula = y ~ x, geom = "line", method = method,
+      fullrange = has.fullrange, linewidth = 1
     )
+    dataSummary <- data %>%
+      group_by(.data[[group]]) %>%
+      summarize(Mean = mean(.data[[response]], na.rm = TRUE))
+    if (missing(has.legend)) {
+      has.legend <- TRUE
+    }
   }
-  if (!missing(groups.order)) {
+
+  if (groups.order[1] == "increasing") {
+    data[[group]] <- factor(
+      data[[group]], levels = levels(data[[group]])[order(dataSummary$Mean)])
+  } else if (!missing(group) && groups.order[1] == "decreasing") {
+    data[[group]] <- factor(
+      data[[group]], levels = levels(data[[group]])[order(dataSummary$Mean,
+                                                          decreasing = TRUE)])
+  } else if (groups.order[1] == "string.length") {
+    data[[group]] <- factor(
+      data[[group]], levels = levels(data[[group]])[order(
+        nchar(levels(data[[group]])))])
+  } else if (groups.order[1] != "none") {
     data[[group]] <- factor(data[[group]], levels = groups.order)
   }
+
   if (!missing(groups.labels)) {
     levels(data[[group]]) <- groups.labels
   }
   if (has.confband == TRUE & missing(group)) {
-    band <- ggplot2::geom_smooth(formula = y ~ x, method = "lm",
+    band <- ggplot2::geom_smooth(formula = y ~ x, method = method,
                                  colour = NA, fill = colours)
   }
   if (has.confband == TRUE & !missing(group)) {
-    band <- ggplot2::geom_smooth(formula = y ~ x, method = "lm", colour = NA)
+    band <- ggplot2::geom_smooth(formula = y ~ x, method = method, colour = NA)
   }
   if (has.points == TRUE & missing(group) & missing(colours)) {
     observations <- ggplot2::geom_point(size = 2, alpha = alpha, shape = 16)
@@ -426,11 +442,6 @@ nice_scatter <- function(data,
         ))
       }
     } +
-    {
-      if (has.legend == FALSE) {
-        ggplot2::theme(legend.position = "none")
-      }
-    } +
     ggplot2::labs(
       legend.title = legend.title, colour = legend.title,
       fill = legend.title, linetype = legend.title, shape = legend.title
@@ -468,5 +479,5 @@ nice_scatter <- function(data,
         )
       }
     }
-  theme_apa(plot)
+  theme_apa(plot, has.legend = has.legend)
 }

@@ -65,17 +65,20 @@ a group, data are group-mean centered and standardized (based on
 MAD or SD); if no group is provided, data are simply standardized.
 }
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Make the basic plot
 plot_outliers(
   airquality,
   group = "Month",
-  response = "Ozone")
+  response = "Ozone"
+)
 
 plot_outliers(
   airquality,
   response = "Ozone",
-  method = "sd")
-
+  method = "sd"
+)
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other functions useful in assumption testing:

@@ -52,17 +52,29 @@
 #' @param yby How much to increase on each "tick" on the y-axis scale.
 #' @param CIcap.width The width of the confidence interval cap.
 #' @param obs Logical, whether to plot individual observations or not.
+#' The type of plotting can also be specified, either `"dotplot"` (same
+#' as `obs = TRUE` for backward compatibility) or `"jitter"`,
+#' useful when there are a lot of observations.
 #' @param alpha The transparency of the plot.
 #' @param border.colour The colour of the violins border.
 #' @param border.size The size of the violins border.
 #' @param has.d Whether to display the d-value.
 #' @param d.x The x-axis coordinates for the d-value.
 #' @param d.y The y-axis coordinates for the d-value.
+#' @param groups.order How to order the group factor levels on
+#' the x-axis. Either "increasing" or "decreasing", to order
+#' based on the value of the variable on the y axis, or
+#' "string.length", to order from the shortest to the longest
+#' string (useful when working with long string names).
+#' "Defaults to "none".
+#' @param xlabels.angle How much to tilt the labels of the
+#' x-axis. Useful when working with long string names.
+#' "Defaults to 0.
 #'
 #' @keywords violin plots
 #' @return A violin plot of class ggplot, by group.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("boot", quietly = TRUE) && requireNamespace("ggsignif", quietly = TRUE)
 #' # Make the basic plot
 #' nice_violin(
 #'   data = ToothGrowth,
@@ -216,9 +228,13 @@ nice_violin <- function(data,
                         border.size = 2,
                         has.d = FALSE,
                         d.x = mean(c(comp1, comp2)) * 1.1,
-                        d.y = mean(data[[response]]) * 1.3) {
+                        d.y = mean(data[[response]]) * 1.3,
+                        groups.order = "none",
+                        xlabels.angle = 0) {
   check_col_names(data, c(group, response))
-  rlang::check_installed(c("ggplot2"), reason = "for this function.")
+  rlang::check_installed(c("ggplot2"),
+                         version = "3.4.0",
+                         reason = "for this function.")
   if (isTRUE(boot)) {
     rlang::check_installed(c("boot"), reason = "for this feature.")
   }
@@ -242,6 +258,20 @@ nice_violin <- function(data,
     bca = boot,
     na.rm = TRUE
   )
+
+  if (groups.order == "increasing") {
+    data[[group]] <- factor(
+      data[[group]], levels = levels(data[[group]])[order(dataSummary$Mean)])
+      } else if (groups.order == "decreasing") {
+    data[[group]] <- factor(
+      data[[group]], levels = levels(data[[group]])[order(dataSummary$Mean,
+                                                          decreasing = TRUE)])
+  } else if (groups.order == "string.length") {
+    data[[group]] <- factor(
+      data[[group]], levels = levels(data[[group]])[order(
+        nchar(levels(data[[group]])))])
+  }
+
   if (has.d == TRUE & any(
     !missing(comp1), !missing(comp2),
     !missing(signif_xmin)
@@ -302,7 +332,13 @@ nice_violin <- function(data,
     )
   plot <- theme_apa(plot) +
     {
-      if (obs == TRUE) {
+      if (xlabels.angle != 0) {
+        ggplot2::theme(axis.text.x = ggplot2::element_text(
+          angle = xlabels.angle, size = 15, vjust = 1, hjust = 1))
+      }
+    }+
+    {
+      if (isTRUE(obs) || obs == "dotplot") {
         ggplot2::geom_dotplot(
           binaxis = "y",
           stackdir = "center",
@@ -311,6 +347,11 @@ nice_violin <- function(data,
           fill = "black",
           alpha = 0.3,
           dotsize = 0.5
+        )
+      } else if (obs == "jitter") {
+        ggplot2::geom_jitter(
+          alpha = 0.3,
+          width = 0.25
         )
       }
     } +

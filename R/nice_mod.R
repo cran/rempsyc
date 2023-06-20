@@ -33,7 +33,7 @@
 #'
 #' @keywords moderation interaction regression
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("effectsize", quietly = TRUE)
 #' # Make the basic table
 #' nice_mod(
 #'   data = mtcars,
@@ -68,7 +68,7 @@
 #'   moderator2 = "am"
 #' )
 #' x
-#' @examplesIf requireNamespace("effectsize", quietly = TRUE) & packageVersion("effectsize") >= "0.8.3.5"
+#' @examplesIf requireNamespace("effectsize", quietly = TRUE) && packageVersion("effectsize") >= "0.8.3.5"
 #' # Get interpretations
 #' cbind(x, Interpretation = effectsize::interpret_omega_squared(x$sr2))
 #'
@@ -91,12 +91,16 @@ nice_mod <- function(data,
                      ci.alternative = "two.sided",
                      ...) {
   check_col_names(data, c(predictor, response, moderator, moderator2, covariates))
-  rlang::check_installed("effectsize", reason = "for this function.")
+  rlang::check_installed("effectsize",
+                         version = "0.8.2",
+                         reason = "for this function.")
 
   if (!missing(b.label)) {
-    message(paste("The argument 'b.label' is deprecated.",
-                  "If your data is standardized, capital B will be used automatically.",
-                  "Else, please use argument 'standardize' directly instead."))
+    message(paste(
+      "The argument 'b.label' is deprecated.",
+      "If your data is standardized, capital B will be used automatically.",
+      "Else, please use argument 'standardize' directly instead."
+    ))
   }
 
   if (data_is_standardized(data)) {
@@ -128,8 +132,10 @@ nice_mod <- function(data,
 
   if (length(models.list) > 1 && mod.id == TRUE) {
     model.number <- rep(seq_along(models.list), times = model.number.rows)
-    table.stats <- stats::setNames(cbind(model.number, table.stats),
-                            c("Model Number", names(table.stats)))
+    table.stats <- stats::setNames(
+      cbind(model.number, table.stats),
+      c("Model Number", names(table.stats))
+    )
   }
   names(table.stats)[names(table.stats) == "b"] <- b.label
 

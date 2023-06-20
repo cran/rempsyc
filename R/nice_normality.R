@@ -28,7 +28,7 @@
 #'         resulting from \code{\link{nice_density}} and \code{\link{nice_qq}}.
 #' @keywords QQ plots normality density distribution
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("see", quietly = TRUE) && requireNamespace("patchwork", quietly = TRUE)
 #' # Make the basic plot
 #' nice_normality(
 #'   data = iris,
@@ -76,7 +76,9 @@ nice_normality <- function(data,
                            ...) {
   check_col_names(data, c(group, variable))
   rlang::check_installed(c("ggplot2", "see", "patchwork"),
-                         reason = "for this function.")
+    version = c("3.4.0", NA, NA),
+    reason = "for this function."
+  )
 
   plot.a <- nice_density(
     data = data, variable = variable, group = group,

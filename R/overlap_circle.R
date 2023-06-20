@@ -11,7 +11,7 @@
 #' @return A plot of class gList, displaying overlapping circles relative
 #'         to the selected score.
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("VennDiagram", quietly = TRUE)
 #' # Score of 1 (0% overlap)
 #' overlap_circle(1)
 #'
@@ -28,8 +28,10 @@
 #' # Saving to file (PDF or PNG)
 #' mypath <- tempfile(fileext = ".pdf")
 #' plot <- overlap_circle(3.5)
-#' ggplot2::ggsave(plot, file = mypath, width = 7,
-#'   height = 7, unit = 'in', dpi = 300)
+#' ggplot2::ggsave(plot,
+#'   file = mypath, width = 7,
+#'   height = 7, unit = "in", dpi = 300
+#' )
 #' # Change for your own desired path
 #' }
 #' @import graphics

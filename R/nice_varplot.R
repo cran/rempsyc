@@ -20,7 +20,7 @@
 #'         group variances. Also includes the max variance ratio
 #'         (maximum variance divided by the minimum variance).
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("ggrepel", quietly = TRUE)
 #' # Make the basic plot
 #' nice_varplot(
 #'   data = iris,
@@ -64,7 +64,9 @@ nice_varplot <- function(data,
                          shapiro = FALSE,
                          ytitle = variable) {
   check_col_names(data, c(group, variable))
-  rlang::check_installed(c("ggplot2", "ggrepel"), reason = "for this function.")
+  rlang::check_installed(c("ggplot2", "ggrepel"),
+                         version = c("3.4.0", NA),
+                         reason = "for this function.")
   data[[group]] <- as.factor(data[[group]])
   {
     if (!missing(groups.labels)) levels(data[[group]]) <- groups.labels

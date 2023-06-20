@@ -25,7 +25,7 @@
 #' @keywords density normality
 #' @return A density plot of class `ggplot`, by group (if provided), along a
 #'         reference line representing a matched normal distribution.
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("ggrepel", quietly = TRUE)
 #' # Make the basic plot
 #' nice_density(
 #'   data = iris,
@@ -78,7 +78,7 @@ nice_density <- function(data,
                          breaks.auto = FALSE,
                          bins = 30) {
   check_col_names(data, c(group, variable))
-  rlang::check_installed("ggplot2", reason = "for this function.")
+  rlang::check_installed("ggplot2", reason = "for this function.", version = "3.4.0")
   if (is.null(group)) {
     group <- "All"
     data[[group]] <- group
@@ -121,19 +121,24 @@ nice_density <- function(data,
   if (isTRUE(breaks.auto && isTRUE(histogram))) {
     # Calculating the Sturges bins
     breaks <- pretty(range(data[[variable]], na.rm = TRUE),
-                     n = grDevices::nclass.Sturges(data[[variable]]),
-                     min.n = 1)
+      n = grDevices::nclass.Sturges(data[[variable]]),
+      min.n = 1
+    )
   } else {
     breaks <- NULL
   }
 
   # Make plot
-  plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]],
-                                             fill = .data[[group]])) +
+  plot <- ggplot2::ggplot(data, ggplot2::aes(
+    x = .data[[variable]],
+    fill = .data[[group]]
+  )) +
     {
       if (isTRUE(histogram)) {
-        ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(
-          !!str2lang("density")), alpha = 0.5),
+        ggplot2::geom_histogram(
+          ggplot2::aes(y = ggplot2::after_stat(
+            !!str2lang("density")
+          ), alpha = 0.5),
           colour = "black", breaks = breaks, bins = bins
         )
       }
@@ -170,15 +175,13 @@ nice_density <- function(data,
         ggplot2::scale_fill_manual(values = colours)
       }
     }
-  plot <- theme_apa(plot) +
-    {
-      if (grid == TRUE) {
-        ggplot2::theme(
-          panel.grid.major = ggplot2::element_line(),
-          panel.grid.minor = ggplot2::element_line(linewidth = 0.5)
-        )
-      }
+  plot <- theme_apa(plot) + {
+    if (grid == TRUE) {
+      ggplot2::theme(
+        panel.grid.major = ggplot2::element_line(),
+        panel.grid.minor = ggplot2::element_line(linewidth = 0.5)
+      )
     }
+  }
   plot
 }
-
