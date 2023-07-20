@@ -22,6 +22,10 @@ if (can_evaluate) {
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
+pkgs <- c("flextable", "broom", "report", "effectsize")
+install_if_not_installed(pkgs)
+
+## -----------------------------------------------------------------------------
 nice_table(
   mtcars[1:3, ],
   title = c("Table 1", "Motor Trend Car Road Tests"),

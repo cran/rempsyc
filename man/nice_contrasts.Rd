@@ -32,16 +32,15 @@ nice_contrasts(
 }
 \value{
 A dataframe, with the selected dependent variable(s), comparisons of
-interest, degrees of freedom, t-values, p-values, robust Cohen's d
-(dR), and the lower and upper 95\% confidence intervals of the
+interest, degrees of freedom, t-values, p-values, Cohen's d, and the
+lower and upper 95\% confidence intervals of the
 effect size (i.e., dR).
 }
 \description{
 Easily compute planned contrast analyses (pairwise
 comparisons similar to t-tests but more powerful when more than
-2 groups), and format in publication-ready format. Supports only
-three groups for the moment. In this particular case, the
-confidence intervals are bootstraped on chosen effect size
+2 groups), and format in publication-ready format. In this particular
+case, the confidence intervals are bootstraped on chosen effect size
 (default to Cohen's d).
 }
 \details{
@@ -54,14 +53,23 @@ with the standard \emph{t} test because it is based on all the cases
 (\href{https://web.pdx.edu/~newsomj/uvclass/ho_planned\%20contrasts.pdf}{source}).
 
 The effect size and confidence interval are calculated via
-\link[bootES:bootES]{bootES::bootES}.
+\link[bootES:bootES]{bootES::bootES}, and correct for contrasts but not for covariates and
+other predictors. Because this method uses bootstrapping, it is recommended
+to set a seed before using for reproducibility reasons (e.g.,
+\code{sed.seet(100)}).
 
-For the \emph{easystats} equivalent, see:
+Does not for the moment support nested comparisons for marginal means,
+only a comparison of all groups. For nested comparisons, please use
+\code{\link[emmeans:contrast]{emmeans::contrast()}} directly, or for the \emph{easystats} equivalent,
 \code{\link[modelbased:estimate_contrasts]{modelbased::estimate_contrasts()}}.
+
+When using \code{nice_lm_contrasts()}, please use \code{as.factor()} outside the
+\code{lm()} formula, or it will lead to an error.
 }
 \examples{
-\dontshow{if (requireNamespace("bootES", quietly = TRUE) && requireNamespace("emmeans", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("bootES", quietly = TRUE) && requireNamespace("modelbased", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Basic example
+set.seed(100)
 nice_contrasts(
   data = mtcars,
   response = "mpg",
@@ -69,6 +77,7 @@ nice_contrasts(
   bootstraps = 200
 )
 \donttest{
+set.seed(100)
 nice_contrasts(
   data = mtcars,
   response = "disp",
@@ -76,6 +85,7 @@ nice_contrasts(
 )
 
 # Multiple dependent variables
+set.seed(100)
 nice_contrasts(
   data = mtcars,
   response = c("mpg", "disp", "hp"),
@@ -83,12 +93,25 @@ nice_contrasts(
 )
 
 # Adding covariates
+set.seed(100)
 nice_contrasts(
   data = mtcars,
   response = "mpg",
   group = "cyl",
   covariates = c("disp", "hp")
 )
+
+# Now supports more than 3 levels
+mtcars2 <- mtcars
+mtcars2$carb <- as.factor(mtcars2$carb)
+set.seed(100)
+nice_contrasts(
+  data = mtcars,
+  response = "mpg",
+  group = "carb",
+  bootstraps = 200
+)
+
 }
 \dontshow{\}) # examplesIf}
 }

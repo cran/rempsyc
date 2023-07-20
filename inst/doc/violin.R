@@ -26,6 +26,10 @@ head(ToothGrowth)
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
+pkgs <- c("ggplot2", "boot", "psych")
+install_if_not_installed(pkgs)
+
+## -----------------------------------------------------------------------------
 nice_violin(
   data = ToothGrowth,
   group = "dose",

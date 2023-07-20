@@ -25,6 +25,12 @@ if (can_evaluate) {
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
+pkgs <- c("bootES", "emmeans", "flextable", "ggplot2", "boot", 
+          "ggsignif", "ggpubr")
+install_if_not_installed(pkgs)
+
+## -----------------------------------------------------------------------------
+set.seed(100)
 table.stats <- nice_contrasts(
   response = "Sepal.Length",
   group = "Species",
@@ -36,6 +42,10 @@ table.stats
 (my_table <- nice_table(table.stats))
 
 ## ---- eval = FALSE------------------------------------------------------------
+#  # Open in Word
+#  print(my_table, preview ="docx")
+#  
+#  # Save in Word
 #  flextable::save_as_docx(my_table, path = "contrasts.docx")
 
 ## ----fig.width=7, fig.height=7------------------------------------------------
@@ -342,6 +352,7 @@ library(dplyr)
 (DV <- data %>% select(QCAEPR:IOS) %>% names())
 
 ## -----------------------------------------------------------------------------
+set.seed(100)
 table.stats <- nice_contrasts(
   response = DV,
   group = "Group",
@@ -366,6 +377,10 @@ table.stats[1] <- rep(c(
 ))
 
 ## ---- eval = FALSE------------------------------------------------------------
+#  # Open in Word
+#  print(my_table, preview ="docx")
+#  
+#  # Save in Word
 #  flextable::save_as_docx(my_table, path = "contrasts.docx")
 
 ## -----------------------------------------------------------------------------

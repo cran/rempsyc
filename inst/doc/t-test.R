@@ -25,6 +25,10 @@ head(mtcars)
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
+pkgs <- c("effectsize", "flextable", "broom", "report")
+install_if_not_installed(pkgs)
+
+## -----------------------------------------------------------------------------
 nice_t_test(
   data = mtcars,
   response = "mpg",
@@ -46,6 +50,10 @@ my_table <- nice_table(t.test.results)
 my_table
 
 ## ---- eval = FALSE------------------------------------------------------------
+#  # Open in Word
+#  print(my_table, preview ="docx")
+#  
+#  # Save in Word
 #  flextable::save_as_docx(my_table, path = "t-tests.docx")
 
 ## -----------------------------------------------------------------------------

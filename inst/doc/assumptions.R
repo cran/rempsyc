@@ -26,7 +26,7 @@ library(performance)
 library(see)
 # Note: if you haven't installed the packages above,
 # you'll need to install them first by using:
-# install.packages("performance") and install.packages("see")
+# install_if_not_installed(c("performance", "see"))
 
 # Create a regression model (using data available in R by default)
 model <- lm(mpg ~ wt * cyl + gear, data = mtcars)
@@ -37,6 +37,11 @@ check_model(model)
 
 ## -----------------------------------------------------------------------------
 library(rempsyc)
+
+## -----------------------------------------------------------------------------
+pkgs <- c("flextable", "performance", "see", "lmtest", "ggplot2",
+          "qqplotr", "ggrepel", "patchwork", "boot")
+install_if_not_installed(pkgs)
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  View(nice_assumptions(model))

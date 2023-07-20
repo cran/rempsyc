@@ -25,6 +25,10 @@ head(mtcars)
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
+pkgs <- c("effectsize", "flextable", "interactions")
+install_if_not_installed(pkgs)
+
+## -----------------------------------------------------------------------------
 mtcars2 <- lapply(mtcars, scale) |> as.data.frame()
 
 ## -----------------------------------------------------------------------------
@@ -40,6 +44,10 @@ moderations
 (my_table <- nice_table(moderations, highlight = TRUE))
 
 ## ---- eval = FALSE------------------------------------------------------------
+#  # Open in Word
+#  print(my_table, preview ="docx")
+#  
+#  # Save in Word
 #  flextable::save_as_docx(my_table, path = "moderations.docx")
 
 ## -----------------------------------------------------------------------------
