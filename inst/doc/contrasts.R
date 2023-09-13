@@ -25,8 +25,10 @@ if (can_evaluate) {
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
-pkgs <- c("bootES", "emmeans", "flextable", "ggplot2", "boot", 
-          "ggsignif", "ggpubr")
+pkgs <- c(
+  "bootES", "emmeans", "flextable", "ggplot2", "boot",
+  "ggsignif", "ggpubr"
+)
 install_if_not_installed(pkgs)
 
 ## -----------------------------------------------------------------------------
@@ -43,7 +45,7 @@ table.stats
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  # Open in Word
-#  print(my_table, preview ="docx")
+#  print(my_table, preview = "docx")
 #  
 #  # Save in Word
 #  flextable::save_as_docx(my_table, path = "contrasts.docx")
@@ -378,7 +380,7 @@ table.stats[1] <- rep(c(
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  # Open in Word
-#  print(my_table, preview ="docx")
+#  print(my_table, preview = "docx")
 #  
 #  # Save in Word
 #  flextable::save_as_docx(my_table, path = "contrasts.docx")

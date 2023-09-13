@@ -54,7 +54,8 @@ overlap_circle(55, scoring = "percentage")
 
 overlap_circle(100, scoring = "percentage")
 
-overlap_circle(c(17, 10, 97), scoring = "direct",
-               categories = c("Self", "Outgroup"))
-
+overlap_circle(c(17, 10, 97),
+  scoring = "direct",
+  categories = c("Self", "Outgroup")
+)
 

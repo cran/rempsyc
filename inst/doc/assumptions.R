@@ -39,8 +39,10 @@ check_model(model)
 library(rempsyc)
 
 ## -----------------------------------------------------------------------------
-pkgs <- c("flextable", "performance", "see", "lmtest", "ggplot2",
-          "qqplotr", "ggrepel", "patchwork", "boot")
+pkgs <- c(
+  "flextable", "performance", "see", "lmtest", "ggplot2",
+  "qqplotr", "ggrepel", "patchwork", "boot"
+)
 install_if_not_installed(pkgs)
 
 ## ---- eval = FALSE------------------------------------------------------------

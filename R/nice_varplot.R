@@ -65,8 +65,9 @@ nice_varplot <- function(data,
                          ytitle = variable) {
   check_col_names(data, c(group, variable))
   rlang::check_installed(c("ggplot2", "ggrepel"),
-                         version = c(get_dep_version("ggplot2"), NA),
-                         reason = "for this function.")
+    version = c(get_dep_version("ggplot2"), NA),
+    reason = "for this function."
+  )
   data[[group]] <- as.factor(data[[group]])
   {
     if (!missing(groups.labels)) levels(data[[group]]) <- groups.labels
@@ -90,7 +91,8 @@ nice_varplot <- function(data,
     xtitle = NULL,
     ytitle = ytitle,
     has.points = FALSE,
-    has.jitter = FALSE
+    has.jitter = FALSE,
+    has.legend = FALSE
   ) +
     ggplot2::geom_jitter(size = 2, width = 0.10) +
     ggplot2::annotate(

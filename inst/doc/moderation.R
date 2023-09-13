@@ -45,7 +45,7 @@ moderations
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  # Open in Word
-#  print(my_table, preview ="docx")
+#  print(my_table, preview = "docx")
 #  
 #  # Save in Word
 #  flextable::save_as_docx(my_table, path = "moderations.docx")

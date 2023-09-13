@@ -5,9 +5,6 @@ date: "February 28, 2020"
 output:
   rmarkdown::html_vignette:
     toc: true
-    md_extensions: [ 
-      "-autolink_bare_uris" 
-    ]
 vignette: >
   %\VignetteIndexEntry{Interpolating the Inclusion of the Other in the Self Scale}
   %\VignetteEngine{knitr::rmarkdown}
@@ -127,9 +124,10 @@ overlap_circle(55, scoring = "percentage")
 
 overlap_circle(100, scoring = "percentage")
 
-overlap_circle(c(17, 10, 97), scoring = "direct",
-               categories = c("Self", "Outgroup"))
-
+overlap_circle(c(17, 10, 97),
+  scoring = "direct",
+  categories = c("Self", "Outgroup")
+)
 ```
 
 ### Thanks for checking in

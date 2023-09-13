@@ -59,7 +59,7 @@ nice_table(stats.table)
 my_table <- nice_table(stats.table)
 
 ## ---- eval = FALSE------------------------------------------------------------
-#  print(my_table, preview ="docx")
+#  print(my_table, preview = "docx")
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  flextable::save_as_docx(my_table, path = "nice_tablehere.docx")
