@@ -49,7 +49,7 @@ t.test.results
 my_table <- nice_table(t.test.results)
 my_table
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  # Open in Word
 #  print(my_table, preview = "docx")
 #  
@@ -84,7 +84,7 @@ nice_t_test(
 ) |>
   nice_table()
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  nice_t_test(
 #    data = ToothGrowth,
 #    response = "len",

@@ -43,7 +43,7 @@ table.stats
 ## -----------------------------------------------------------------------------
 (my_table <- nice_table(table.stats))
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  # Open in Word
 #  print(my_table, preview = "docx")
 #  
@@ -62,16 +62,16 @@ table.stats
   signif_xmax = c("virginica", "versicolor", "virginica")
 ))
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  ggplot2::ggsave("Figure 1.pdf", figure,
 #    width = 7, height = 7,
 #    unit = "in", dpi = 300
 #  )
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  data <- read.csv("https://osf.io/qkmnp//?action=download", header = TRUE)
 
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 data <- structure(list(
   id = 1:90, Group = c(
     "Embodied", "Embodied", "Control",
@@ -378,7 +378,7 @@ table.stats[1] <- rep(c(
   note = "\U1D451\U1D3F = robust Cohen’s \U1D451; CI = bootstrapped confidence interval. The comparisons were between-groups only (i.e., there were no within-subject pre/post comparisons). One participant did not complete the Interpersonal Reactivity Index. Bold/Grey background values represent statistically significant differences between the groups on that row and variable."
 ))
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  # Open in Word
 #  print(my_table, preview = "docx")
 #  
@@ -447,7 +447,7 @@ library(ggpubr)
   ncol = 2, nrow = 2
 ))
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  ggplot2::ggsave("Figure 1.pdf", figure,
 #    width = 14, height = 14,
 #    unit = "in", dpi = 300

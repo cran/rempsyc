@@ -58,10 +58,10 @@ nice_table(stats.table)
 ## -----------------------------------------------------------------------------
 my_table <- nice_table(stats.table)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  print(my_table, preview = "docx")
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  flextable::save_as_docx(my_table, path = "nice_tablehere.docx")
 
 ## -----------------------------------------------------------------------------
@@ -88,11 +88,11 @@ nice_table(stats.table, broom = "lm")
 ## -----------------------------------------------------------------------------
 library(report)
 model <- lm(mpg ~ cyl + wt * hp, mtcars)
-(stats.table <- as.data.frame(report(model)))
-nice_table(stats.table)
+(stats.table <- report_table(model))
+nice_table(stats.table, report = "lm")
 
 ## -----------------------------------------------------------------------------
-nice_table(stats.table, short = TRUE)
+nice_table(stats.table, report = "lm", short = TRUE)
 
 ## -----------------------------------------------------------------------------
 stats.table <- nice_t_test(

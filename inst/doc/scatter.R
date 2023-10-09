@@ -35,7 +35,7 @@ nice_scatter(
   response = "mpg"
 )
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  ### Save a high-resolution image file to specified directory
 #  ggplot2::ggsave("nice_scatterplothere.pdf",
 #    width = 7, height = 7,

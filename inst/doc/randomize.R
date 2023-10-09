@@ -72,7 +72,7 @@ nice_randomized_subjects <- nice_randomize(
 )
 head(nice_randomized_subjects)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  runsheet <- nice_table(nice_randomized_subjects)
 #  flextable::save_as_docx(runsheet, path = "runsheet.docx")
 #  # Change the path to where you would like to save it.

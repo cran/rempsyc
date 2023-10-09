@@ -1,4 +1,4 @@
-## ---- include=FALSE-----------------------------------------------------------
+## ----include=FALSE------------------------------------------------------------
 library(knitr)
 
 knitr::opts_chunk$set(
@@ -31,7 +31,7 @@ library(see)
 # Create a regression model (using data available in R by default)
 model <- lm(mpg ~ wt * cyl + gear, data = mtcars)
 
-## ---- out.width="90%"---------------------------------------------------------
+## ----out.width="90%"----------------------------------------------------------
 # Check model assumptions
 check_model(model)
 
@@ -45,7 +45,7 @@ pkgs <- c(
 )
 install_if_not_installed(pkgs)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  View(nice_assumptions(model))
 
 ## -----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ models.list <- lapply(X = formulas, FUN = lm, data = mtcars)
 # Make diagnostic table
 assumptions.table <- nice_assumptions(models.list)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  View(assumptions.table)
 
 ## -----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ nice_density(
   title = "Density (Sepal Length)"
 )
 
-## ---- fig.width=12, fig.height=7, out.width="100%"----------------------------
+## ----fig.width=12, fig.height=7, out.width="100%"-----------------------------
 nice_normality(
   data = iris,
   variable = "Sepal.Length",
@@ -153,7 +153,7 @@ winsorize_mad(airquality$Ozone, criteria = 3) |>
 ## -----------------------------------------------------------------------------
 check_outliers(na.omit(airquality), method = "mcd")
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  View(nice_var(
 #    data = iris,
 #    variable = "Sepal.Length",
@@ -171,7 +171,7 @@ var.table <- nice_var(
   group = "Species"
 )
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  View(var.table)
 
 ## -----------------------------------------------------------------------------

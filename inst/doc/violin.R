@@ -36,7 +36,7 @@ nice_violin(
   response = "len"
 )
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  ggplot2::ggsave("nice_violinplothere.pdf",
 #    width = 7, height = 7,
 #    unit = "in", dpi = 300
@@ -138,7 +138,7 @@ nice_violin(
   yby = 5
 )
 
-## ---- fig.width=8-------------------------------------------------------------
+## ----fig.width=8--------------------------------------------------------------
 ToothGrowth$six.groups <- sample(1:6, 60, replace = T)
 nice_violin(
   data = ToothGrowth,
@@ -206,7 +206,7 @@ p <- nice_violin(
   border.size = 1
 )
 
-## ---- fig.width=8-------------------------------------------------------------
+## ----fig.width=8--------------------------------------------------------------
 # Compute basic statistics and save to object
 library(psych) # Install the psych package if you don't already have it
 statsSummary <- describeBy(
