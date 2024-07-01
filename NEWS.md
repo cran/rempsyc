@@ -1,3 +1,34 @@
+# rempsyc 0.1.8
+* ✨Incoming✨
+
+## rempsyc 0.1.7.8
+* `nice_t_test`: add temporary workaround for paired t-tests failing (#28)
+
+## rempsyc 0.1.7.7
+* `nice_table()` gains a new argument: `spacing` (defaults to double space = 2, but can be set to 1 for single spacing)
+
+## rempsyc 0.1.7.6
+* `nice_lm()` fix a bug with `nice_lm()` which doesn't work with lm models containing a single term (#27)
+
+## rempsyc 0.1.7.5
+* `nice_table()` loses its `nice_table` class because of a name collision with the printing method of the `afex` package for `nice_table` objects (produced with `afex::nice`, #26)
+
+## rempsyc 0.1.7.4
+* `plot_means_over_time()`:
+  * Now supports more than 5 groups (but shapes are not consistent after that)
+  * Gains the `groups.order` argument, like `nice_scatter()`, to organize group factor levels in increasing or decreasing order.
+
+## rempsyc 0.1.7.3
+* `plot_means_over_time()`:
+  * error bar colours changed from black to group colour to ease the visual distinction of a manual addition of vertical comparison significance bars.
+  * New arguments to include significance bars and stars: `significance_bars_x`, `significance_stars`, `significance_stars_x`, `significance_stars_y`
+
+## rempsyc 0.1.7.2
+* New function: `grouped_bar_chart()`, to plot categorical data options over several groups.
+
+## rempsyc 0.1.7.1
+* New function: `plot_means_over_time()`, to plot group (intervention) data over time (1, 2, 3).
+
 # rempsyc 0.1.7
 * CRAN resubmission
 

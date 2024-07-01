@@ -15,6 +15,7 @@ nice_table(
   format.custom,
   col.format.custom,
   width = NULL,
+  spacing = 2,
   broom = NULL,
   report = NULL,
   short = FALSE,
@@ -64,6 +65,8 @@ function to. Select with numerical range, e.g., 1:3.}
 total width, when exported e.g., to Word. For full width,
 use \code{width = 1}.}
 
+\item{spacing}{Spacing of the rows (1 = single space, 2 = double space)}
+
 \item{broom}{If providing a tidy table produced with the
 \code{broom} package, which model type to use if one wants
 automatic formatting (options are "t.test", "lm", "cor.test",
@@ -85,7 +88,7 @@ if desired.}
 on name delimiters (i.e., periods ".").}
 }
 \value{
-An APA-formatted table of class "flextable" (and "nice_table").
+An APA-formatted table of class "flextable"
 }
 \description{
 Make nice APA tables easily through a wrapper

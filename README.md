@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/rempsyc/rempsyc/workflows/R-CMD-check/badge.svg)](https://github.com/rempsyc/rempsyc/actions)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/rempsyc)](https://cran.r-project.org/package=rempsyc)
-[![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/ui/#package:rempsyc)
+[![r-universe](https://rempsyc.r-universe.dev/badges/rempsyc)](https://rempsyc.r-universe.dev/rempsyc)
 [![Last-commit](https://img.shields.io/github/last-commit/rempsyc/rempsyc)](https://github.com/rempsyc/rempsyc/commits/main)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![downloads](https://cranlogs.r-pkg.org/badges/rempsyc)](https://shinyus.ipub.com/cranview/)
@@ -30,6 +30,12 @@ bug, or request a feature.
 - [Release notes](https://rempsyc.remi-theriault.com/news/index.html)
 - [Development objectives (to-do
   list)](https://rempsyc.remi-theriault.com/TODOS.html)
+
+Top 40 new CRAN packages (2022)!
+
+> *This is one of the most helpful R packages I’ve used in years! It
+> saves hours of time and patience and is super easy to implement!* -
+> Mark ([more testimonials](https://rempsyc.remi-theriault.com/articles/featured.html#testimonials))
 
 ## Installation
 
@@ -127,15 +133,15 @@ t.tests <- nice_t_test(
 )
 t.tests
 #>   Dependent Variable         t       df              p         d   CI_lower
-#> 1                mpg -3.767123 18.33225 0.001373638333 -1.477947 -2.2659731
-#> 2               disp  4.197727 29.25845 0.000230041299  1.445221  0.6417834
+#> 1                mpg -3.767123 18.33225 0.001373638333 -1.477947 -2.2659732
+#> 2               disp  4.197727 29.25845 0.000230041299  1.445221  0.6417836
 #> 3               drat -5.646088 27.19780 0.000005266742 -2.003084 -2.8592770
 #> 4                 wt  5.493905 29.23352 0.000006272020  1.892406  1.0300224
 #>     CI_upper
-#> 1 -0.6705686
-#> 2  2.2295592
-#> 3 -1.1245498
-#> 4  2.7329218
+#> 1 -0.6705684
+#> 2  2.2295594
+#> 3 -1.1245499
+#> 4  2.7329219
 ```
 
 ``` r
@@ -220,10 +226,10 @@ moderations
 #> 5            2               disp        wt 28  0.83273987  7.6662883
 #> 6            2               disp   gear:wt 28 -0.08758665 -0.8140664
 #>                   p         sr2     CI_lower   CI_upper
-#> 1 0.431415645312886 0.004805465 0.0000000000 0.02702141
+#> 1 0.431415645312884 0.004805465 0.0000000000 0.02702141
 #> 2 0.000000002383144 0.558188818 0.3142326391 0.80214500
 #> 3 0.039899695159515 0.035022025 0.0003502202 0.09723370
-#> 4 0.491683361920263 0.003546038 0.0000000000 0.02230154
+#> 4 0.491683361920264 0.003546038 0.0000000000 0.02230154
 #> 5 0.000000023731710 0.429258143 0.1916386492 0.66687764
 #> 6 0.422476456495512 0.004840251 0.0000000000 0.02679265
 ```
@@ -420,6 +426,56 @@ nice_scatter(
 <img src="man/figures/README-nice_scatter2-1.png" width="70%" />
 
 Full tutorial: <https://rempsyc.remi-theriault.com/articles/scatter>
+
+## `plot_means_over_time`
+
+Make nice plots of means over time, usually for randomized controlled
+trials with several groups over several time measurements. Error bars
+represent 95% confidence intervals adjusted for within-subject variance
+as by the method of Morey (2008).
+
+``` r
+data <- mtcars
+names(data)[6:3] <- paste0("T", 1:4, "_some-time-variable")
+
+plot_means_over_time(
+  data = data,
+  response = names(data)[6:3],
+  group = "cyl",
+  groups.order = "decreasing",
+  significance_bars_x = c(3.15, 4.15),
+  significance_stars = c("*", "***"),
+  significance_stars_x = c(3.25, 4.35),
+  # significance_stars_y: List with structure: list(c("group1", "group2", time))
+  significance_stars_y = list(c("4", "8", time = 3),
+                              c("4", "8", time = 4)))
+```
+
+<img src="man/figures/README-plot_means_over_time-1.png" width="70%" />
+
+## `grouped_bar_chart`
+
+Make nice plots of means over time, usually for randomized controlled
+trials with several groups over several time measurements. Error bars
+represent 95% confidence intervals adjusted for within-subject variance
+as by the method of Morey (2008).
+
+``` r
+iris2 <- iris
+iris2$plant <- c(
+  rep("yes", 45),
+  rep("no", 45),
+  rep("maybe", 30),
+  rep("NA", 30)
+)
+grouped_bar_chart(
+  data = iris2,
+  response = "plant",
+  group = "Species"
+)
+```
+
+<img src="man/figures/README-grouped_bar_chart-1.png" width="70%" />
 
 ## `overlap_circle`
 

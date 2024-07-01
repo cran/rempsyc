@@ -1,7 +1,7 @@
 Package: rempsyc
 Title: Convenience Functions for Psychology
-Version: 0.1.7
-Date: 2023-10-09
+Version: 0.1.8
+Date: 2024-07-01
 Authors@R: 
     person("Rémi", "Thériault", , "remi.theriault@mail.mcgill.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4315-6788"))
@@ -20,15 +20,15 @@ Suggests: flextable (>= 0.9.1), ggplot2 (>= 3.4.0), effectsize (>=
         correlation, datawizard (>= 0.5.0), report (>= 0.5.1),
         modelbased, see, lmtest, ggrepel, boot, bootES, ggsignif,
         qqplotr (>= 0.0.6), broom, emmeans, ggpubr, interactions,
-        openxlsx2 (>= 0.8), patchwork, psych, VennDiagram, methods,
-        testthat (>= 3.0.0), knitr, markdown, rmarkdown
+        openxlsx2 (>= 0.8), patchwork, psych, VennDiagram, Rmisc,
+        methods, tidyr, testthat (>= 3.0.0), knitr, markdown, rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.2.3.9000
+RoxygenNote: 7.3.1
 NeedsCompilation: no
-Packaged: 2023-10-09 21:01:08 UTC; there
+Packaged: 2024-07-01 17:53:56 UTC; coding
 Author: Rémi Thériault [aut, cre] (<https://orcid.org/0000-0003-4315-6788>)
 Maintainer: Rémi Thériault <remi.theriault@mail.mcgill.ca>
 Repository: CRAN
-Date/Publication: 2023-10-09 22:30:02 UTC
+Date/Publication: 2024-07-01 21:30:02 UTC

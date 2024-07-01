@@ -38,6 +38,7 @@
 #' @param width Width of the table, in percentage of the
 #' total width, when exported e.g., to Word. For full width,
 #' use `width = 1`.
+#' @param spacing Spacing of the rows (1 = single space, 2 = double space)
 #' @param broom If providing a tidy table produced with the
 #' `broom` package, which model type to use if one wants
 #' automatic formatting (options are "t.test", "lm", "cor.test",
@@ -54,7 +55,7 @@
 #' on name delimiters (i.e., periods ".").
 #'
 #' @keywords APA style table
-#' @return An APA-formatted table of class "flextable" (and "nice_table").
+#' @return An APA-formatted table of class "flextable"
 #' @examplesIf requireNamespace("flextable", quietly = TRUE) && requireNamespace("methods", quietly = TRUE)
 #' # Make the basic table
 #' my_table <- nice_table(
@@ -152,6 +153,7 @@ nice_table <- function(data,
                        format.custom,
                        col.format.custom,
                        width = NULL,
+                       spacing = 2,
                        broom = NULL,
                        report = NULL,
                        short = FALSE,
@@ -233,7 +235,7 @@ nice_table <- function(data,
   nice.borders <- list("width" = 0.5, color = "black", style = "solid")
 
   table <- create_flextable(
-    dataframe, highlight, width, note,
+    dataframe, highlight, width, spacing, note,
     separate.header, nice.borders
   )
 
@@ -260,7 +262,9 @@ nice_table <- function(data,
 
   table <- finalize_table(table, title, nice.borders)
 
-  class(table) <- c("nice_table", class(table))
+  # class(table) <- c("nice_table", class(table))
+  # remove `nice_table` class because of name collision with printing method
+  # of the `afex` package for `nice_table` objects
 
   table
 }
@@ -478,7 +482,7 @@ prepare_flextable <- function(dataframe, separate.header, col.format.ci,
       rename("95% CI (b)" = "95% CI") %>%
       relocate("B", .after = last_col()) %>%
       format_CI(c("CI_lower_B", "CI_upper_B"),
-                col.name = "95% CI (B)"
+        col.name = "95% CI (B)"
       )
   }
   if ("CI_lower_r" %in% names(dataframe) && "CI_upper_r" %in% names(dataframe)) {
@@ -486,7 +490,7 @@ prepare_flextable <- function(dataframe, separate.header, col.format.ci,
       rename("95% CI (sigma)" = "95% CI") %>%
       relocate("r", .after = last_col()) %>%
       format_CI(c("CI_lower_r", "CI_upper_r"),
-                col.name = "95% CI (r)"
+        col.name = "95% CI (r)"
       )
   }
   if ("rmsea.ci.lower" %in% names(dataframe) && "rmsea.ci.upper" %in% names(dataframe)) {
@@ -560,7 +564,7 @@ prepare_flextable <- function(dataframe, separate.header, col.format.ci,
 }
 
 # create_flextable
-create_flextable <- function(dataframe, highlight, width, note,
+create_flextable <- function(dataframe, highlight, width, spacing, note,
                              separate.header, nice.borders) {
   table <- dataframe %>%
     {
@@ -591,7 +595,7 @@ create_flextable <- function(dataframe, highlight, width, note,
     flextable::align(align = "center", part = "all") %>%
     flextable::align(j = 1, align = "left", part = "body") %>%
     flextable::valign(valign = "center", part = "all") %>%
-    flextable::line_spacing(space = 2, part = "all") %>%
+    flextable::line_spacing(space = spacing, part = "all") %>%
     flextable::fix_border_issues()
 
   if (!is.null(width)) {
@@ -750,7 +754,7 @@ format_columns <- function(dataframe, table, italics, separate.header,
       '"95% CI (", flextable::as_i("d"), ")"', # d
       '"95% CI (", "\u03b7", flextable::as_sub("p"), flextable::as_sup("2"), ")"', # peta
       '"95% CI (", "\u03b7", flextable::as_sup("2"), ")"', # eta
-      '"95% CI (", flextable::as_i("r"), flextable::as_i(flextable::as_sub("rb")), ")"', #rrb
+      '"95% CI (", flextable::as_i("r"), flextable::as_i(flextable::as_sub("rb")), ")"', # rrb
       '"95% CI (", "\u03C3", ")"', # sigma
       '"95% CI (", "\u03C3", flextable::as_sup("2"), ")"', # sigma2
       '"95% CI (", flextable::as_i("r"), ")"', # r
