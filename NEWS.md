@@ -1,5 +1,17 @@
+# rempsyc 0.1.9
+* New CRAN submission
+
+## rempsyc 0.1.8.3
+* `cormatrix_excel` now relies entirely on `correlation::cormatrix_to_excel()` to reduce maintenance.
+
+## rempsyc 0.1.8.2
+* `best_duplicate`: fix a bug with grouped tibbles leading to an error
+
+## rempsyc 0.1.8.1
+* `nice_density`: add `vjust = "inward"` and `hjust = "inward"` to annotation to fix changes in `ggpubr`
+
 # rempsyc 0.1.8
-* ✨Incoming✨
+* New CRAN submission
 
 ## rempsyc 0.1.7.8
 * `nice_t_test`: add temporary workaround for paired t-tests failing (#28)
