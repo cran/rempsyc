@@ -37,14 +37,14 @@ nice_violin(
 )
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  ggplot2::ggsave("nice_violinplothere.pdf",
-#    width = 7, height = 7,
-#    unit = "in", dpi = 300
-#  )
-#  # Change the path to where you would like to save it.
-#  # If you copy-paste your path name,
-#  # remember to use "R" slashes ('/' rather than '\').
-#  # Also remember to specify the .tiff extension of the file.
+# ggplot2::ggsave("nice_violinplothere.pdf",
+#   width = 7, height = 7,
+#   unit = "in", dpi = 300
+# )
+# # Change the path to where you would like to save it.
+# # If you copy-paste your path name,
+# # remember to use "R" slashes ('/' rather than '\').
+# # Also remember to specify the .tiff extension of the file.
 
 ## -----------------------------------------------------------------------------
 nice_violin(

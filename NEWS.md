@@ -1,7 +1,32 @@
-# rempsyc 0.1.9
+# rempsyc 0.2.0
 * New CRAN submission
 
-## rempsyc 0.1.8.3
+## rempsyc 0.1.9.7
+* Add more automatic confidence interval column name conversions for `nice_table()`.
+
+## rempsyc 0.1.9.6
+* Optimize copilot setup workflow part 2: Replace manual `install.packages()` approach with efficient `r-lib/actions/setup-r-dependencies@v2` using pak for better dependency resolution, automatic caching, and targeted package installation. This follows the proven patterns used in other workflows (R-CMD-check, pkgdown) and eliminates redundant manual caching steps (#63)
+
+## rempsyc 0.1.9.5
+* Further optimize copilot setup workflow for 50%+ time reduction: Remove redundant system packages (`r-base-dev`, graphics libraries), fix R package caching to target correct directories, remove contradictory suggested package installation step, optimize git checkout to use shallow clone, and streamline testing to essential verification only. Combined with previous optimizations, this achieves significant setup time improvements while maintaining core development functionality
+
+## rempsyc 0.1.9.4
+* Optimize custom copilot setup: Remove suggested packages from automated setup to save 3-7 minutes installation time. Suggested packages are now installed on-demand based on specific PR requirements, following targeted installation approach (#51)
+
+## rempsyc 0.1.9.3
+* `nice_lm()`: fix bug with factor covariates having more than two levels causing "arguments imply differing number of rows" error (#31)
+* `nice_lm_slopes()`: add better error message when factor moderators are used, explaining that only continuous moderators are supported. Also add explicit test documenting that continuous moderators work correctly even when models contain factor covariates with multiple levels
+
+## rempsyc 0.1.9.2
+* `nice_scatter`: Major enhancement with two highly requested features:
+  * **Point ID display**: New `has.ids` parameter displays point labels/IDs directly on scatter plots using `ggrepel` for intelligent non-overlapping positioning. Use `id.column` to specify a custom column for labels, defaults to row names.
+  * **Group-wise correlations**: New `has.group.r` and `has.group.p` parameters display correlation statistics for each group separately with smart anti-overlap positioning. r-values position on left side, p-values on right side to prevent overlap. Includes automatic italic formatting consistent with overall correlation display.
+  * Both features integrate seamlessly with all existing plot options and maintain backward compatibility.
+
+## rempsyc 0.1.9.1
+* `nice_table`: Fixed cross-environment snapshot test failures by replacing snapshot tests with robust class-based assertions, ensuring consistent behavior across different R environments and platforms.
+
+# rempsyc 0.1.9
 * `cormatrix_excel` now relies entirely on `correlation::cormatrix_to_excel()` to reduce maintenance.
 
 ## rempsyc 0.1.8.2

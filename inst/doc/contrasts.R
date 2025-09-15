@@ -44,11 +44,11 @@ table.stats
 (my_table <- nice_table(table.stats))
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  # Open in Word
-#  print(my_table, preview = "docx")
-#  
-#  # Save in Word
-#  flextable::save_as_docx(my_table, path = "contrasts.docx")
+# # Open in Word
+# print(my_table, preview = "docx")
+# 
+# # Save in Word
+# flextable::save_as_docx(my_table, path = "contrasts.docx")
 
 ## ----fig.width=7, fig.height=7------------------------------------------------
 (figure <- nice_violin(
@@ -63,13 +63,13 @@ table.stats
 ))
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  ggplot2::ggsave("Figure 1.pdf", figure,
-#    width = 7, height = 7,
-#    unit = "in", dpi = 300
-#  )
+# ggplot2::ggsave("Figure 1.pdf", figure,
+#   width = 7, height = 7,
+#   unit = "in", dpi = 300
+# )
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  data <- read.csv("https://osf.io/qkmnp//?action=download", header = TRUE)
+# data <- read.csv("https://osf.io/qkmnp//?action=download", header = TRUE)
 
 ## ----include = FALSE----------------------------------------------------------
 data <- structure(list(
@@ -379,11 +379,11 @@ table.stats[1] <- rep(c(
 ))
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  # Open in Word
-#  print(my_table, preview = "docx")
-#  
-#  # Save in Word
-#  flextable::save_as_docx(my_table, path = "contrasts.docx")
+# # Open in Word
+# print(my_table, preview = "docx")
+# 
+# # Save in Word
+# flextable::save_as_docx(my_table, path = "contrasts.docx")
 
 ## -----------------------------------------------------------------------------
 Data <- na.omit(data)
@@ -448,8 +448,8 @@ library(ggpubr)
 ))
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  ggplot2::ggsave("Figure 1.pdf", figure,
-#    width = 14, height = 14,
-#    unit = "in", dpi = 300
-#  )
+# ggplot2::ggsave("Figure 1.pdf", figure,
+#   width = 14, height = 14,
+#   unit = "in", dpi = 300
+# )
 

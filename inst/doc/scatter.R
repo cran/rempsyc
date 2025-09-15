@@ -36,15 +36,15 @@ nice_scatter(
 )
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  ### Save a high-resolution image file to specified directory
-#  ggplot2::ggsave("nice_scatterplothere.pdf",
-#    width = 7, height = 7,
-#    unit = "in", dpi = 300
-#  )
-#  # Change the path to where you would like to save it.
-#  # If you copy-paste your path name, remember to
-#  # use "R" slashes ('/' rather than '\').
-#  # Also remember to specify the .tiff extension of the file.
+# ### Save a high-resolution image file to specified directory
+# ggplot2::ggsave("nice_scatterplothere.pdf",
+#   width = 7, height = 7,
+#   unit = "in", dpi = 300
+# )
+# # Change the path to where you would like to save it.
+# # If you copy-paste your path name, remember to
+# # use "R" slashes ('/' rather than '\').
+# # Also remember to specify the .tiff extension of the file.
 
 ## -----------------------------------------------------------------------------
 nice_scatter(

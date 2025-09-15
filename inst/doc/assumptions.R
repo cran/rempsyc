@@ -46,7 +46,7 @@ pkgs <- c(
 install_if_not_installed(pkgs)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  View(nice_assumptions(model))
+# View(nice_assumptions(model))
 
 ## -----------------------------------------------------------------------------
 nice_table(nice_assumptions(model), col.format.p = 2:4)
@@ -62,7 +62,7 @@ models.list <- lapply(X = formulas, FUN = lm, data = mtcars)
 assumptions.table <- nice_assumptions(models.list)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  View(assumptions.table)
+# View(assumptions.table)
 
 ## -----------------------------------------------------------------------------
 nice_table(assumptions.table, col.format.p = 2:4)
@@ -154,11 +154,11 @@ winsorize_mad(airquality$Ozone, criteria = 3) |>
 check_outliers(na.omit(airquality), method = "mcd")
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  View(nice_var(
-#    data = iris,
-#    variable = "Sepal.Length",
-#    group = "Species"
-#  ))
+# View(nice_var(
+#   data = iris,
+#   variable = "Sepal.Length",
+#   group = "Species"
+# ))
 
 ## -----------------------------------------------------------------------------
 # Define our dependent variables
@@ -172,7 +172,7 @@ var.table <- nice_var(
 )
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  View(var.table)
+# View(var.table)
 
 ## -----------------------------------------------------------------------------
 nice_varplot(

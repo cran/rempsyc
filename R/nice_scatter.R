@@ -49,6 +49,20 @@
 #' @param has.p Whether to display the p-value.
 #' @param p.x The x-axis coordinates for the p-value.
 #' @param p.y The y-axis coordinates for the p-value.
+#' @param has.ids Whether to display point IDs/labels on the plot.
+#' @param id.column The column name to use for point labels. If not specified,
+#' row names will be used.
+#' @param has.group.r Whether to display correlation coefficients for each group
+#' separately when using grouping.
+#' @param group.r.x The x-axis coordinates for group correlation coefficients.
+#' If NULL (default), will be positioned at the left side of the plot.
+#' @param group.r.y The y-axis coordinates for group correlation coefficients.
+#' If NULL (default), will be positioned at the top of the plot.
+#' @param has.group.p Whether to display p-values for each group separately.
+#' @param group.p.x The x-axis coordinates for group p-values.
+#' If NULL (default), will be positioned at the right side of the plot.
+#' @param group.p.y The y-axis coordinates for group p-values.
+#' If NULL (default), will be positioned at the top of the plot.
 #'
 #' @keywords scatter plots
 #' @return A scatter plot of class ggplot.
@@ -233,6 +247,24 @@
 #'   group = "cyl",
 #'   has.shape = TRUE
 #' )
+#'
+#' # Display point IDs/labels
+#' nice_scatter(
+#'   data = mtcars,
+#'   predictor = "wt",
+#'   response = "mpg",
+#'   has.ids = TRUE
+#' )
+#'
+#' # Display group correlations separately
+#' nice_scatter(
+#'   data = mtcars,
+#'   predictor = "wt",
+#'   response = "mpg",
+#'   group = "cyl",
+#'   has.group.r = TRUE,
+#'   has.group.p = TRUE
+#' )
 #' }
 #'
 #' @seealso
@@ -241,69 +273,113 @@
 #' \url{https://rempsyc.remi-theriault.com/articles/scatter}
 #'
 #' @importFrom stats cor.test
+#' @importFrom dplyr group_by summarize mutate reframe row_number %>%
 
-nice_scatter <- function(data,
-                         predictor,
-                         response,
-                         xtitle = predictor,
-                         ytitle = response,
-                         has.points = TRUE,
-                         has.jitter = FALSE,
-                         alpha = 0.7,
-                         has.line = TRUE,
-                         method = "lm",
-                         has.confband = FALSE,
-                         has.fullrange = FALSE,
-                         has.linetype = FALSE,
-                         has.shape = FALSE,
-                         xmin,
-                         xmax,
-                         xby = 1,
-                         ymin,
-                         ymax,
-                         yby = 1,
-                         has.legend = FALSE,
-                         legend.title = "",
-                         group = NULL,
-                         colours = "#619CFF",
-                         groups.order = "none",
-                         groups.labels = NULL,
-                         groups.alpha = NULL,
-                         has.r = FALSE,
-                         r.x = Inf,
-                         r.y = -Inf,
-                         has.p = FALSE,
-                         p.x = Inf,
-                         p.y = -Inf) {
+nice_scatter <- function(
+  data,
+  predictor,
+  response,
+  xtitle = predictor,
+  ytitle = response,
+  has.points = TRUE,
+  has.jitter = FALSE,
+  alpha = 0.7,
+  has.line = TRUE,
+  method = "lm",
+  has.confband = FALSE,
+  has.fullrange = FALSE,
+  has.linetype = FALSE,
+  has.shape = FALSE,
+  xmin,
+  xmax,
+  xby = 1,
+  ymin,
+  ymax,
+  yby = 1,
+  has.legend = FALSE,
+  legend.title = "",
+  group = NULL,
+  colours = "#619CFF",
+  groups.order = "none",
+  groups.labels = NULL,
+  groups.alpha = NULL,
+  has.r = FALSE,
+  r.x = Inf,
+  r.y = -Inf,
+  has.p = FALSE,
+  p.x = Inf,
+  p.y = -Inf,
+  has.ids = FALSE,
+  id.column = NULL,
+  has.group.r = FALSE,
+  group.r.x = NULL,
+  group.r.y = NULL,
+  has.group.p = FALSE,
+  group.p.x = NULL,
+  group.p.y = NULL
+) {
   check_col_names(data, c(predictor, response))
-  rlang::check_installed("ggplot2",
-                         reason = "for this function.",
-                         version = get_dep_version("ggplot2"))
+  rlang::check_installed(
+    "ggplot2",
+    reason = "for this function.",
+    version = get_dep_version("ggplot2")
+  )
   has.groups <- !missing(group)
+
+  # Initialize group correlations variable
+  group_correlations <- NULL
+
+  # Prepare ID column for labels if requested
+  if (has.ids) {
+    if (!is.null(id.column)) {
+      check_col_names(data, id.column)
+      data$.id_labels <- data[[id.column]]
+    } else {
+      data$.id_labels <- rownames(data)
+      if (
+        is.null(data$.id_labels) ||
+          all(data$.id_labels == as.character(seq_len(nrow(data))))
+      ) {
+        data$.id_labels <- seq_len(nrow(data))
+      }
+    }
+  }
   if (has.r == TRUE) {
-    r <- format_r(cor.test(data[[predictor]],
-      data[[response]],
-      use = "complete.obs",
-    )$estimate)
+    r <- format_r(
+      cor.test(
+        data[[predictor]],
+        data[[response]],
+        use = "complete.obs",
+      )$estimate
+    )
   }
   if (has.p == TRUE) {
-    p <- format_p(cor.test(data[[predictor]],
-      data[[response]],
-      use = "complete.obs",
-    )$p.value,
-    sign = TRUE
+    p <- format_p(
+      cor.test(
+        data[[predictor]],
+        data[[response]],
+        use = "complete.obs",
+      )$p.value,
+      sign = TRUE
     )
   }
   if (missing(group)) {
     smooth <- ggplot2::stat_smooth(
-      formula = y ~ x, geom = "line", method = method,
-      fullrange = has.fullrange, color = colours, linewidth = 1
+      formula = y ~ x,
+      geom = "line",
+      method = method,
+      fullrange = has.fullrange,
+      color = colours,
+      linewidth = 1
     )
   } else {
     data[[group]] <- as.factor(data[[group]])
     smooth <- ggplot2::stat_smooth(
-      formula = y ~ x, geom = "line", method = method,
-      fullrange = has.fullrange, linewidth = 1
+      formula = y ~ x,
+      geom = "line",
+      method = method,
+      fullrange = has.fullrange,
+      linewidth = 1
     )
     dataSummary <- data %>%
       group_by(.data[[group]]) %>%
@@ -311,19 +387,66 @@ nice_scatter <- function(data,
     if (missing(has.legend)) {
       has.legend <- TRUE
     }
+
+    # Calculate correlations by group if requested
+    if (has.group.r || has.group.p) {
+      group_correlations <- data %>%
+        group_by(.data[[group]]) %>%
+        reframe({
+          cor_result <- cor.test(
+            .data[[predictor]],
+            .data[[response]],
+            use = "complete.obs"
+          )
+          result_df <- data.frame(
+            r = cor_result$estimate,
+            p = cor_result$p.value
+          )
+          result_df[[group]] <- unique(.data[[group]])
+          result_df
+        }) %>%
+        mutate(
+          r_formatted = format_r(r),
+          p_formatted = format_p(p, sign = TRUE)
+        )
+
+      # Set default positions for group correlations to avoid overlap
+      # Strategy: r-values on left, p-values on right to prevent overlap
+      x_range <- range(data[[predictor]], na.rm = TRUE)
+      y_range <- range(data[[response]], na.rm = TRUE)
+
+      if (is.null(group.r.x)) {
+        group.r.x <- x_range[1] + diff(x_range) * 0.02 # Left side with small margin
+      }
+      if (is.null(group.r.y)) {
+        group.r.y <- y_range[2] # Top
+      }
+      if (is.null(group.p.x)) {
+        group.p.x <- x_range[2] - diff(x_range) * 0.02 # Right side with small margin
+      }
+      if (is.null(group.p.y)) {
+        group.p.y <- y_range[2] # Same vertical level as r values (but different horizontal)
+      }
+    }
   }
 
   if (groups.order[1] == "increasing") {
     data[[group]] <- factor(
-      data[[group]], levels = levels(data[[group]])[order(dataSummary$Mean)])
+      data[[group]],
+      levels = levels(data[[group]])[order(dataSummary$Mean)]
+    )
   } else if (!missing(group) && groups.order[1] == "decreasing") {
     data[[group]] <- factor(
-      data[[group]], levels = levels(data[[group]])[order(dataSummary$Mean,
-                                                          decreasing = TRUE)])
+      data[[group]],
+      levels = levels(data[[group]])[order(dataSummary$Mean, decreasing = TRUE)]
+    )
   } else if (groups.order[1] == "string.length") {
     data[[group]] <- factor(
-      data[[group]], levels = levels(data[[group]])[order(
-        nchar(levels(data[[group]])))])
+      data[[group]],
+      levels = levels(data[[group]])[order(
+        nchar(levels(data[[group]]))
+      )]
+    )
   } else if (groups.order[1] != "none") {
     data[[group]] <- factor(data[[group]], levels = groups.order)
   }
@@ -332,8 +455,12 @@ nice_scatter <- function(data,
     levels(data[[group]]) <- groups.labels
   }
   if (has.confband == TRUE & missing(group)) {
-    band <- ggplot2::geom_smooth(formula = y ~ x, method = method,
-                                 colour = NA, fill = colours)
+    band <- ggplot2::geom_smooth(
+      formula = y ~ x,
+      method = method,
+      colour = NA,
+      fill = colours
+    )
   }
   if (has.confband == TRUE & !missing(group)) {
     band <- ggplot2::geom_smooth(formula = y ~ x, method = method, colour = NA)
@@ -346,8 +473,10 @@ nice_scatter <- function(data,
   }
   if (has.points == TRUE & missing(group) & !missing(colours)) {
     observations <- ggplot2::geom_point(
-      size = 2, alpha = alpha,
-      colour = colours, shape = 16
+      size = 2,
+      alpha = alpha,
+      colour = colours,
+      shape = 16
     )
   }
   if (has.points == TRUE & !missing(group) & has.shape == TRUE) {
@@ -363,8 +492,10 @@ nice_scatter <- function(data,
   }
   if (has.jitter == TRUE & missing(group) & !missing(colours)) {
     observations <- ggplot2::geom_jitter(
-      size = 2, alpha = alpha,
-      colour = colours, shape = 16
+      size = 2,
+      alpha = alpha,
+      colour = colours,
+      shape = 16
     )
     has.points <- FALSE
   }
@@ -377,21 +508,14 @@ nice_scatter <- function(data,
     ggplot2::aes(
       x = .data[[predictor]],
       y = .data[[response]],
-      colour = switch(has.groups == TRUE,
+      colour = switch(has.groups == TRUE, .data[[group]]),
+      fill = switch(has.groups == TRUE, .data[[group]]),
+      linetype = switch(
+        has.groups == TRUE & has.linetype == TRUE,
         .data[[group]]
       ),
-      fill = switch(has.groups == TRUE,
-        .data[[group]]
-      ),
-      linetype = switch(has.groups == TRUE & has.linetype == TRUE,
-        .data[[group]]
-      ),
-      shape = switch(has.groups == TRUE & has.shape == TRUE,
-        .data[[group]]
-      ),
-      alpha = switch(!is.null(groups.alpha),
-        .data[[group]]
-      )
+      shape = switch(has.groups == TRUE & has.shape == TRUE, .data[[group]]),
+      alpha = switch(!is.null(groups.alpha), .data[[group]])
     )
   ) +
     ggplot2::xlab(xtitle) +
@@ -414,14 +538,16 @@ nice_scatter <- function(data,
     {
       if (!missing(xmin)) {
         ggplot2::scale_x_continuous(
-          limits = c(xmin, xmax), breaks = seq(xmin, xmax, by = xby)
+          limits = c(xmin, xmax),
+          breaks = seq(xmin, xmax, by = xby)
         )
       }
     } +
     {
       if (!missing(ymin)) {
         ggplot2::scale_y_continuous(
-          limits = c(ymin, ymax), breaks = seq(ymin, ymax, by = yby)
+          limits = c(ymin, ymax),
+          breaks = seq(ymin, ymax, by = yby)
         )
       }
     } +
@@ -437,18 +563,81 @@ nice_scatter <- function(data,
     } +
     {
       if (!missing(colours)) {
-        ggplot2::guides(fill = ggplot2::guide_legend(
-          override.aes = list(colour = colours)
-        ))
+        ggplot2::guides(
+          fill = ggplot2::guide_legend(
+            override.aes = list(colour = colours)
+          )
+        )
       }
     } +
     ggplot2::labs(
-      legend.title = legend.title, colour = legend.title,
-      fill = legend.title, linetype = legend.title, shape = legend.title
+      legend.title = legend.title,
+      colour = legend.title,
+      fill = legend.title,
+      linetype = legend.title,
+      shape = legend.title
     ) +
     {
       if (!missing(groups.alpha)) {
         ggplot2::scale_alpha_manual(values = groups.alpha, guide = "none")
+      }
+    } +
+    {
+      if (has.ids) {
+        rlang::check_installed("ggrepel", reason = "for displaying IDs.")
+        ggrepel::geom_text_repel(
+          ggplot2::aes(label = .data$.id_labels),
+          size = 3,
+          max.overlaps = Inf
+        )
+      }
+    } +
+    {
+      if (has.group.r && !missing(group) && !is.null(group_correlations)) {
+        # Create text data for group correlations
+        y_range <- diff(range(data[[response]], na.rm = TRUE))
+        y_spacing <- y_range * 0.08 # 8% of range for better spacing
+        group_r_data <- group_correlations %>%
+          mutate(
+            x = group.r.x,
+            y = group.r.y - (dplyr::row_number() - 1) * y_spacing,
+            label = sprintf(
+              "%s: italic('r')~'='~'%s'",
+              .data[[group]],
+              r_formatted
+            )
+          )
+        ggplot2::geom_text(
+          data = group_r_data,
+          ggplot2::aes(x = x, y = y, label = label),
+          inherit.aes = FALSE,
+          hjust = 0,
+          vjust = 1,
+          size = 6,
+          parse = TRUE
+        )
+      }
+    } +
+    {
+      if (has.group.p && !missing(group) && !is.null(group_correlations)) {
+        # Create text data for group p-values
+        y_range <- diff(range(data[[response]], na.rm = TRUE))
+        y_spacing <- y_range * 0.08 # 8% of range for better spacing
+        group_p_data <- group_correlations %>%
+          mutate(
+            x = group.p.x,
+            y = group.p.y - (dplyr::row_number() - 1) * y_spacing,
+            label = sprintf("%s: italic('p')~'%s'", .data[[group]], p_formatted)
+          )
+        ggplot2::geom_text(
+          data = group_p_data,
+          ggplot2::aes(x = x, y = y, label = label),
+          inherit.aes = FALSE,
+          hjust = 1, # Right-align text since positioned on right side
+          vjust = 1,
+          size = 6,
+          parse = TRUE
+        )
       }
     } +
     {

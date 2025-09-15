@@ -50,11 +50,11 @@ my_table <- nice_table(t.test.results)
 my_table
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  # Open in Word
-#  print(my_table, preview = "docx")
-#  
-#  # Save in Word
-#  flextable::save_as_docx(my_table, path = "t-tests.docx")
+# # Open in Word
+# print(my_table, preview = "docx")
+# 
+# # Save in Word
+# flextable::save_as_docx(my_table, path = "t-tests.docx")
 
 ## -----------------------------------------------------------------------------
 nice_t_test(
@@ -85,13 +85,13 @@ nice_t_test(
   nice_table()
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  nice_t_test(
-#    data = ToothGrowth,
-#    response = "len",
-#    group = "supp",
-#    paired = TRUE
-#  ) |>
-#    nice_table()
+# nice_t_test(
+#   data = ToothGrowth,
+#   response = "len",
+#   group = "supp",
+#   paired = TRUE
+# ) |>
+#   nice_table()
 
 ## -----------------------------------------------------------------------------
 nice_t_test(

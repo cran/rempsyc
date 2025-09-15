@@ -44,11 +44,11 @@ moderations
 (my_table <- nice_table(moderations, highlight = TRUE))
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  # Open in Word
-#  print(my_table, preview = "docx")
-#  
-#  # Save in Word
-#  flextable::save_as_docx(my_table, path = "moderations.docx")
+# # Open in Word
+# print(my_table, preview = "docx")
+# 
+# # Save in Word
+# flextable::save_as_docx(my_table, path = "moderations.docx")
 
 ## -----------------------------------------------------------------------------
 slopes <- nice_slopes(
